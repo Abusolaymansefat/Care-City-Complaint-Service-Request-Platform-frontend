@@ -19,6 +19,9 @@
       }
     ],
     "paths": {
+      "@/config/*": ["./app/config/*"],
+      "@/store/*": ["./app/store/*"],
+      "@/types": ["./app/types/index.ts"],
       "@/*": ["./*"]
     }
   },

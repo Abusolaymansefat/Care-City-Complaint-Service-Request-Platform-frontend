@@ -2,24 +2,23 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Building2, LogOut, Menu } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Button, LinkButton } from "@/components/ui/button";
+import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import ThemeToggle from "./theme-toggle";
 import UserMenu from "./user-menu";
-// import { useAuthStore } from "@/store/auth.store";
+import { useAuthStore } from "@/store/auth.store";
+import { useMounted } from "@/hooks/useMounted";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  // const { user, logout } = useAuthStore();
-  const [mounted, setMounted] = useState(false);
+  const { user, logout } = useAuthStore();
+  const mounted = useMounted();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   const links = [
     { href: "/", label: "Home" },
@@ -76,24 +75,23 @@ export default function Navbar() {
               <UserMenu />
             ) : (
               <>
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/register">Register</Link>
-                </Button>
+                <LinkButton variant="ghost" href="/login">Login</LinkButton>
+                <LinkButton href="/register">Register</LinkButton>
               </>
             )}
           </div>
 
           {/* Mobile menu */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Menu">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            aria-label="Menu"
+            onPress={() => setOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          <SheetContent isOpen={open} onOpenChange={setOpen} side="right" className="w-72">
               <SheetHeader>
                 <SheetTitle>CityCare</SheetTitle>
               </SheetHeader>
@@ -122,18 +120,17 @@ export default function Navbar() {
                     </>
                   ) : (
                     <>
-                      <Button variant="outline" asChild onClick={() => setOpen(false)}>
-                        <Link href="/login">Login</Link>
-                      </Button>
-                      <Button asChild onClick={() => setOpen(false)}>
-                        <Link href="/register">Register</Link>
-                      </Button>
+                      <LinkButton variant="outline" href="/login" onPress={() => setOpen(false)}>
+                        Login
+                      </LinkButton>
+                      <LinkButton href="/register" onPress={() => setOpen(false)}>
+                        Register
+                      </LinkButton>
                     </>
                   )}
                 </div>
               </div>
             </SheetContent>
-          </Sheet>
         </div>
       </div>
     </header>
