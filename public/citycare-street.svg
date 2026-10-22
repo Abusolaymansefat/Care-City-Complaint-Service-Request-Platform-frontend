@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="800" viewBox="0 0 1440 800" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="892" y1="0" x2="892" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DDF3EF"/>
+      <stop offset="1" stop-color="#F4F6E9"/>
+    </linearGradient>
+    <linearGradient id="road" x1="1055" y1="441" x2="1055" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#697B79"/>
+      <stop offset="1" stop-color="#344846"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1440v800H0z"/>
+  <circle cx="1190" cy="137" r="62" fill="#F6CE72"/>
+  <path fill="#B8DAD0" d="M780 310h150V124H780zM946 310h132V76H946zM1095 310h161V149h-161zM1270 310h170V96h-170z"/>
+  <path fill="#E3ECE4" d="M806 151h21v26h-21zM851 151h21v26h-21zM806 201h21v26h-21zM851 201h21v26h-21zM974 112h21v27h-21zM1020 112h21v27h-21zM974 164h21v27h-21zM1020 164h21v27h-21zM1123 180h23v28h-23zM1175 180h23v28h-23zM1301 125h23v28h-23zM1352 125h23v28h-23z"/>
+  <path fill="#8FAE99" d="M0 345c175-58 319-65 499-20 149 37 251 42 405 4v81H0z"/>
+  <path fill="#DCE8D2" d="M0 405h1440v395H0z"/>
+  <path fill="#9CBEA5" d="M0 488h254v312H0zM1231 470h209v330h-209z"/>
+  <path fill="#E9D5AE" d="M66 433h143v367H66zM1276 416h116v384h-116z"/>
+  <path fill="#D5E4D4" d="M91 474h34v51H91zM151 474h34v51h-34zM91 555h34v51H91zM151 555h34v51h-34zM1301 453h27v46h-27zM1347 453h27v46h-27zM1301 525h27v46h-27zM1347 525h27v46h-27z"/>
+  <path fill="#5F916F" d="M268 472h28v230h-28zM245 529c-49 0-79-31-79-69 45-1 76 21 79 69ZM287 502c1-48 33-73 81-70-2 42-28 67-81 70Z"/>
+  <path fill="#6F9A75" d="M1187 475h28v225h-28zM1203 533c-45-4-71-32-69-69 42 1 66 24 69 69ZM1207 505c4-43 34-65 77-58-6 37-34 58-77 58Z"/>
+  <path fill="url(#road)" d="M563 438h449l375 362H188z"/>
+  <path stroke="#F5E6AE" stroke-dasharray="34 30" stroke-linecap="round" stroke-width="10" d="m795 481-5 74m-10 129-7 82"/>
+  <rect x="1017" y="394" width="45" height="91" rx="22.5" fill="#fff"/>
+  <path fill="#0F766E" d="M1039.5 409a15 15 0 0 0-15 15c0 11.4 15 28 15 28s15-16.6 15-28a15 15 0 0 0-15-15Z"/>
+  <circle cx="1039.5" cy="424" r="5" fill="#fff"/>
+  <path fill="#354D42" d="M85 800c48-75 87-113 119-113s70 38 119 113H85ZM1180 800c40-62 73-93 100-93 28 0 61 31 101 93h-201Z"/>
+  <path fill="#4B6E59" d="M0 732c81-38 156-38 225 0v68H0zM1228 727c70-39 141-39 212 0v73h-212z"/>
+</svg>

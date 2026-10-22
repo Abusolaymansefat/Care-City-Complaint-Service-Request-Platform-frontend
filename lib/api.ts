@@ -1,7 +1,12 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/store/auth.store";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+const configuredBaseURL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "");
+const baseURL = configuredBaseURL
+  ? /\/api\/v1$/i.test(configuredBaseURL)
+    ? configuredBaseURL
+    : `${configuredBaseURL}/api/v1`
+  : undefined;
 
 export const api = axios.create({ baseURL, withCredentials: true });
 
@@ -16,7 +21,7 @@ let refreshing: Promise<string> | null = null;
 const refreshAccessToken = async () => {
   const { refreshToken, setTokens } = useAuthStore.getState();
   if (!refreshToken) throw new Error("No refresh token");
-  // plain axios: interceptor loop এড়াতে
+
   const res = await axios.post(
     `${baseURL}/auth/refresh-token`,
     { refreshToken },

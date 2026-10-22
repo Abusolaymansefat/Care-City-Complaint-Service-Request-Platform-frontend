@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-import { getApiError, getDashboardPath } from "@/lib/auth";
+import { getApiError, getDashboardPath, getUserFromAccessToken } from "@/lib/auth";
 import { useAuthStore } from "@/store/auth.store";
 import type { AuthPayload } from "@/types";
 import type {
@@ -18,20 +18,28 @@ import type {
 const post = async <T>(url: string, body: unknown) =>
   (await api.post<{ data: T }>(url, body)).data.data;
 
+type AuthResponse = Pick<AuthPayload, "accessToken" | "refreshToken"> & {
+  user?: AuthPayload["user"];
+};
+
 const useAuthSuccess = () => {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
-  return (data: AuthPayload, message: string) => {
-    setAuth(data);
+  return (data: AuthResponse, message: string) => {
+    const authPayload: AuthPayload = {
+      ...data,
+      user: data.user ?? getUserFromAccessToken(data.accessToken),
+    };
+    setAuth(authPayload);
     toast.success(message);
-    router.push(getDashboardPath(data.user.role));
+    router.push(getDashboardPath(authPayload.user.role));
   };
 };
 
 export const useLogin = () => {
   const onAuth = useAuthSuccess();
   return useMutation({
-    mutationFn: (input: LoginInput) => post<AuthPayload>("/auth/login", input),
+    mutationFn: (input: LoginInput) => post<AuthResponse>("/auth/login", input),
     onSuccess: (data) => onAuth(data, "Welcome back!"),
     onError: (e) => toast.error(getApiError(e)),
   });
@@ -40,7 +48,7 @@ export const useLogin = () => {
 export const useGoogleAuth = () => {
   const onAuth = useAuthSuccess();
   return useMutation({
-    mutationFn: (idToken: string) => post<AuthPayload>("/auth/google-login", { idToken }),
+    mutationFn: (idToken: string) => post<AuthResponse>("/auth/google-login", { idToken }),
     onSuccess: (data) => onAuth(data, "Logged in with Google"),
     onError: (e) => toast.error(getApiError(e)),
   });

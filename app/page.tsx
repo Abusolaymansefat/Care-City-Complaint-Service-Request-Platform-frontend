@@ -4,10 +4,9 @@ import {
   Building2,
   CheckCircle2,
   ClipboardList,
-  MapPin,
-  ShieldCheck,
 } from "lucide-react";
 import Navbar from "@/components/layout/navbar";
+import HomeBanner from "@/components/layout/home-banner";
 
 const steps = [
   {
@@ -35,96 +34,7 @@ export default function Home() {
     <>
       <Navbar />
       <main>
-        <section className="relative overflow-hidden border-b bg-muted/30">
-          <div className="pointer-events-none absolute -top-32 right-0 size-[32rem] rounded-full bg-primary/5 blur-3xl" />
-          <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
-            <div className="relative">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1.5 text-sm text-muted-foreground shadow-sm">
-                <MapPin className="size-4 text-primary" />
-                Your voice can improve your neighborhood
-              </div>
-              <h1 className="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                A better city starts with{" "}
-                <span className="text-primary">being heard.</span>
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
-                Report local problems, connect with the right city team, and follow
-                every update in one simple place.
-              </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/register"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/85"
-                >
-                  Get started
-                  <ArrowRight className="size-4" />
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex h-11 items-center justify-center rounded-lg border bg-background px-5 text-sm font-medium transition-colors hover:bg-muted"
-                >
-                  Sign in to your account
-                </Link>
-              </div>
-              <div className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
-                <ShieldCheck className="size-4 text-primary" />
-                Your report stays connected to you and its progress.
-              </div>
-            </div>
-
-            <div className="relative mx-auto w-full max-w-lg">
-              <div className="absolute -inset-4 rounded-[2rem] bg-primary/5 blur-2xl" />
-              <div className="relative rounded-2xl border bg-card p-5 shadow-xl shadow-black/5 sm:p-7">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Recent report</p>
-                    <h2 className="mt-1 text-xl font-semibold">Streetlight outage</h2>
-                  </div>
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <span className="size-1.5 rounded-full bg-amber-500" />
-                    In progress
-                  </span>
-                </div>
-                <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="size-4" />
-                  Central Avenue, Ward 04
-                </div>
-                <div className="my-6 h-px bg-border" />
-                <ol className="space-y-5">
-                  <li className="flex gap-3">
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <CheckCircle2 className="size-4" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium">Report submitted</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">Your city has received the details</p>
-                    </div>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-background">
-                      <span className="size-2 rounded-full bg-primary" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium">Assigned to city team</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">A team is working on your report</p>
-                    </div>
-                  </li>
-                  <li className="flex gap-3 opacity-50">
-                    <span className="mt-0.5 size-6 shrink-0 rounded-full border-2 border-muted-foreground/30" />
-                    <div>
-                      <p className="text-sm font-medium">Issue resolved</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">We&apos;ll let you know when it&apos;s done</p>
-                    </div>
-                  </li>
-                </ol>
-                <div className="mt-6 rounded-xl bg-muted/70 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">The result</p>
-                  <p className="mt-1 text-sm">A clear view of what happens after you speak up.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <HomeBanner />
 
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
