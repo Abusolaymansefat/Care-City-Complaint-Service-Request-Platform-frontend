@@ -1,6 +1,7 @@
 import {
   Building2,
   ClipboardList,
+  CreditCard,
   FilePlus2,
   LayoutDashboard,
   ListChecks,
@@ -32,6 +33,7 @@ export const navByRole: Record<Role, NavGroup[]> = {
       items: [
         { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
         { title: "My Complaints", href: "/complaints", icon: ClipboardList },
+        { title: "Payments", href: "/payments", icon: CreditCard },
         { title: "Report Issue", href: "/complaints/new", icon: FilePlus2 },
       ],
     },
@@ -53,6 +55,7 @@ export const navByRole: Record<Role, NavGroup[]> = {
       items: [
         { title: "Overview", href: "/admin", icon: LayoutDashboard },
         { title: "All Complaints", href: "/admin/complaints", icon: ClipboardList },
+        { title: "Payments", href: "/admin/payments", icon: CreditCard },
         { title: "Departments", href: "/admin/departments", icon: Building2 },
         { title: "Users", href: "/admin/users", icon: Users },
       ],

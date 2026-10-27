@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMounted } from "@/hooks/useMounted";
 import { useAuthStore } from "@/store/auth.store";
@@ -14,6 +15,7 @@ const stats = [
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
   const mounted = useMounted();
+  const isCitizen = mounted && user?.role === "CITIZEN";
 
   return (
     <div className="space-y-6">
@@ -35,6 +37,22 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {isCitizen && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Payments</CardTitle>
+            <CardDescription>
+              The first 2 complaints are free. From the 3rd complaint, pay 10 BDT with bKash.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/payments" className="text-sm text-primary hover:underline">
+              View my payments
+            </Link>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

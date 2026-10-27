@@ -32,6 +32,8 @@ const refreshAccessToken = async () => {
   return accessToken as string;
 };
 
+
+
 const skipRefresh = /\/auth\/(login|register|verify-email|google-login|refresh-token)/;
 
 api.interceptors.response.use(
