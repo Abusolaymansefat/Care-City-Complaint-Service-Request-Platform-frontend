@@ -5,6 +5,7 @@ import {
   FilePlus2,
   LayoutDashboard,
   ListChecks,
+  Settings,
   UserCircle,
   Users,
   type LucideIcon,
@@ -23,8 +24,22 @@ export interface NavGroup {
 
 const account: NavGroup = {
   label: "Account",
-  items: [{ title: "Profile", href: "/profile", icon: UserCircle }],
+  items: [
+    { title: "Profile", href: "/profile", icon: UserCircle },
+    { title: "Settings", href: "/settings", icon: Settings },
+  ],
 };
+
+const officerGroups: NavGroup[] = [
+  {
+    label: "Menu",
+    items: [
+      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { title: "Assigned Complaints", href: "/complaints", icon: ListChecks },
+    ],
+  },
+  account,
+];
 
 export const navByRole: Record<Role, NavGroup[]> = {
   CITIZEN: [
@@ -39,16 +54,9 @@ export const navByRole: Record<Role, NavGroup[]> = {
     },
     account,
   ],
-  OFFICER: [
-    {
-      label: "Menu",
-      items: [
-        { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-        { title: "Assigned Complaints", href: "/complaints", icon: ListChecks },
-      ],
-    },
-    account,
-  ],
+  TECHNICIAN: officerGroups,
+  DEPARTMENT_OFFICER: officerGroups,
+  OFFICER: officerGroups,
   ADMIN: [
     {
       label: "Admin",

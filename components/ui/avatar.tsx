@@ -26,16 +26,24 @@ function Avatar({
 type ImageState = "loading" | "loaded" | "error"
 
 function AvatarImage({ className, ...props }: React.ComponentProps<"img">) {
-  const [state, setState] = React.useState<ImageState>(
-    props.src ? "loading" : "error"
-  )
+  const [imageState, setImageState] = React.useState<{
+    src: React.ComponentProps<"img">["src"]
+    state: ImageState
+  }>(() => ({ src: props.src, state: props.src ? "loading" : "error" }))
+  const state =
+    imageState.src === props.src
+      ? imageState.state
+      : props.src
+        ? "loading"
+        : "error"
+
   return (
     <img
       data-slot="avatar-image"
       alt={props.alt || ""}
       data-state={state}
-      onLoad={() => setState("loaded")}
-      onError={() => setState("error")}
+      onLoad={() => setImageState({ src: props.src, state: "loaded" })}
+      onError={() => setImageState({ src: props.src, state: "error" })}
       className={cn(
         "peer aspect-square size-full rounded-full object-cover data-[state=error]:hidden",
         className

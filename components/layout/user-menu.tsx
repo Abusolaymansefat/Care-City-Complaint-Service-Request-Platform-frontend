@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,19 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/store/auth.store";
+import { getInitials } from "@/lib/auth";
 
 export default function UserMenu() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
 
   if (!user) return null;
-
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 
   const handleLogout = () => {
     logout();
@@ -43,13 +37,22 @@ export default function UserMenu() {
         className="rounded-full p-0"
       >
         <Avatar>
-          <AvatarFallback>{initials}</AvatarFallback>
+          <AvatarImage src={user.imageUrl ?? undefined} alt={`${user.name}'s profile`} />
+          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
         </Avatar>
       </Button>
       <DropdownMenu placement="bottom end" className="w-56">
         <DropdownMenuLabel>
-          <p className="text-sm font-medium">{user.name}</p>
-          <p className="text-xs font-normal text-muted-foreground">{user.email}</p>
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarImage src={user.imageUrl ?? undefined} alt={`${user.name}'s profile`} />
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium">{user.name}</p>
+              <p className="truncate text-xs font-normal text-muted-foreground">{user.email}</p>
+            </div>
+          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onAction={() => router.push(user.role === "ADMIN" ? "/admin" : "/dashboard")}>

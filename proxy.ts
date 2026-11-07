@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedPaths = ["/dashboard", "/complaints", "/admin", "/profile"];
+const protectedPaths = ["/dashboard", "/complaints", "/admin", "/profile", "/settings"];
 
 function getRole(token: string) {
   try {
@@ -28,5 +28,11 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/complaints/:path*", "/admin/:path*", "/profile/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/complaints/:path*",
+    "/admin/:path*",
+    "/profile/:path*",
+    "/settings/:path*",
+  ],
 };
