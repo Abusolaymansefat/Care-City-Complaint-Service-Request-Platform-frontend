@@ -1,4 +1,5 @@
 import {
+  Bell,
   Building2,
   ClipboardList,
   CreditCard,
@@ -25,6 +26,7 @@ export interface NavGroup {
 const account: NavGroup = {
   label: "Account",
   items: [
+     { title: "Notifications", href: "/notifications", icon: Bell },
     { title: "Profile", href: "/profile", icon: UserCircle },
     { title: "Settings", href: "/settings", icon: Settings },
   ],

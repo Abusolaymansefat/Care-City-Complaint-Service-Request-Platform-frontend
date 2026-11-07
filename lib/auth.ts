@@ -30,8 +30,12 @@ export const getUserFromAccessToken = (accessToken: string): User => {
         ? "ADMIN"
         : payload.role === "CITIZEN"
           ? "CITIZEN"
-          : payload.role === "TECHNICIAN" || payload.role === "DEPARTMENT_OFFICER" || payload.role === "OFFICER"
-            ? "OFFICER"
+          : payload.role === "TECHNICIAN"
+            ? "TECHNICIAN"
+            : payload.role === "DEPARTMENT_OFFICER"
+              ? "DEPARTMENT_OFFICER"
+              : payload.role === "OFFICER"
+                ? "OFFICER"
             : null;
 
     if (

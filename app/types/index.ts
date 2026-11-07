@@ -1,4 +1,9 @@
-export type Role = "CITIZEN" | "TECHNICIAN" | "DEPARTMENT_OFFICER" | "ADMIN";
+export type Role =
+  | "CITIZEN"
+  | "TECHNICIAN"
+  | "DEPARTMENT_OFFICER"
+  | "OFFICER"
+  | "ADMIN";
 
 export interface User {
   id: string;
@@ -65,4 +70,133 @@ export interface PaginationMeta {
   limit: number;
   total: number;
   totalPages: number;
+}
+
+export type NotificationType =
+  | "GENERAL"
+  | "COMPLAINT_CREATED"
+  | "COMPLAINT_STATUS_CHANGED"
+  | "ASSIGNMENT_CREATED"
+  | "ASSIGNMENT_STATUS_CHANGED"
+  | "PAYMENT_INITIATED"
+  | "PAYMENT_PAID"
+  | "PAYMENT_FAILED"
+  | "FEEDBACK_SUBMITTED";
+
+export interface Notification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  link?: string | null;
+  isRead: boolean;
+  readAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotificationQuery {
+  page?: number;
+  limit?: number;
+  isRead?: boolean;
+  type?: NotificationType;
+}
+
+export type ComplaintStatus =
+  | "SUBMITTED"
+  | "UNDER_REVIEW"
+  | "ASSIGNED"
+  | "IN_PROGRESS"
+  | "RESOLVED"
+  | "CLOSED"
+  | "REJECTED"
+  | "REOPENED"
+  | "CANCELLED";
+
+export type Priority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+
+export interface Category {
+  id: string;
+  name: string;
+  description?: string | null;
+  slaHours: number;
+  departmentId: string;
+  isActive: boolean;
+  createdAt: string;
+  department?: { id: string; name: string } | null;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  description?: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface ComplaintUpdate {
+  id: string;
+  complaintId: string;
+  status: ComplaintStatus;
+  comment?: string | null;
+  createdAt: string;
+  updater?: { id: string; name: string; role: Role } | null;
+}
+
+export interface Complaint {
+  id: string;
+  trackingCode: string;
+  title: string;
+  description: string;
+  address: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  status: ComplaintStatus;
+  priority: Priority;
+  paymentRequired: boolean;
+  slaDueAt?: string | null;
+  resolvedAt?: string | null;
+  citizenId: string;
+  departmentId: string;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category?: { id: string; name: string; slaHours: number } | null;
+  department?: { id: string; name: string } | null;
+  citizen?: { id: string; name: string; email: string } | null;
+  updates?: ComplaintUpdate[];
+  payments?: Payment[];
+}
+
+export interface ComplaintQuery {
+  searchTerm?: string;
+  categoryId?: string;
+  departmentId?: string;
+  status?: ComplaintStatus;
+  priority?: Priority;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+export interface CreateComplaintInput {
+  title: string;
+  description: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
+  categoryId: string;
+}
+
+export interface Feedback {
+  id: string;
+  complaintId: string;
+  citizenId: string;
+  rating: number;
+  comment?: string | null;
+  createdAt: string;
+  complaint?: { id: string; trackingCode: string; title: string; status: ComplaintStatus } | null;
+
 }

@@ -12,6 +12,7 @@ import UserMenu from "./user-menu";
 import { useAuthStore } from "@/store/auth.store";
 import { useMounted } from "@/hooks/useMounted";
 import { cn } from "@/lib/utils";
+import NotificationBell from "../notifications/NotificationBell";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -72,7 +73,10 @@ export default function Navbar() {
             {!mounted ? (
               <div className="h-9 w-24" />
             ) : user ? (
-              <UserMenu />
+              <>
+                <NotificationBell />
+                <UserMenu />
+              </>
             ) : (
               <>
                 <LinkButton variant="ghost" href="/login">Login</LinkButton>
