@@ -20,7 +20,6 @@ export function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // UX guard only; আসল authorization backend-এ
   if (token && pathname.startsWith("/admin") && getRole(token) !== "ADMIN") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
