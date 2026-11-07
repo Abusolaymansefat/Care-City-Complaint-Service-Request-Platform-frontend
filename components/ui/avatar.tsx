@@ -26,29 +26,43 @@ function Avatar({
 type ImageState = "loading" | "loaded" | "error"
 
 function AvatarImage({ className, ...props }: React.ComponentProps<"img">) {
+  const { src: source, onLoad, onError, ...imageProps } = props
+  const src =
+    typeof source === "string"
+      ? source.trim() || undefined
+      : source
   const [imageState, setImageState] = React.useState<{
     src: React.ComponentProps<"img">["src"]
     state: ImageState
-  }>(() => ({ src: props.src, state: props.src ? "loading" : "error" }))
+  }>(() => ({ src, state: src ? "loading" : "error" }))
   const state =
-    imageState.src === props.src
+    imageState.src === src
       ? imageState.state
-      : props.src
+      : src
         ? "loading"
         : "error"
+
+  if (!src) return null
 
   return (
     <img
       data-slot="avatar-image"
       alt={props.alt || ""}
       data-state={state}
-      onLoad={() => setImageState({ src: props.src, state: "loaded" })}
-      onError={() => setImageState({ src: props.src, state: "error" })}
+      onLoad={(event) => {
+        onLoad?.(event)
+        setImageState({ src, state: "loaded" })
+      }}
+      onError={(event) => {
+        onError?.(event)
+        setImageState({ src, state: "error" })
+      }}
       className={cn(
         "peer aspect-square size-full rounded-full object-cover data-[state=error]:hidden",
         className
       )}
-      {...props}
+      {...imageProps}
+      src={src}
     />
   )
 }
