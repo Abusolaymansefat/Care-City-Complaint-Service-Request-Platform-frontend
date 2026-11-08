@@ -1,6 +1,7 @@
 import {
   Bot,
   Bell,
+  Building2,
   ClipboardList,
   CreditCard,
   FilePlus2,
@@ -34,12 +35,33 @@ const account: NavGroup = {
   ],
 };
 
-const officerGroups: NavGroup[] = [
+const legacyOfficerGroups: NavGroup[] = [
   {
     label: "Menu",
     items: [
       { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { title: "Assigned Complaints", href: "/complaints", icon: ListChecks },
+    ],
+  },
+  account,
+];
+
+const technicianGroups: NavGroup[] = [
+  {
+    label: "Work",
+    items: [
+      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { title: "My Assignments", href: "/complaints", icon: ListChecks },
+    ],
+  },
+  account,
+];
+
+const departmentOfficerGroups: NavGroup[] = [
+  {
+    label: "Department",
+    items: [
+      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { title: "Department Complaints", href: "/complaints", icon: ListChecks },
     ],
   },
   account,
@@ -51,6 +73,7 @@ export const navByRole: Record<Role, NavGroup[]> = {
       label: "Menu",
       items: [
         { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { title: "Departments", href: "/citizen/departments", icon: Building2 },
         { title: "Categories", href: "/citizen/categories", icon: Tags },
         { title: "My Complaints", href: "/citizen/complaints", icon: ClipboardList },
         { title: "Create Poster", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
@@ -61,14 +84,15 @@ export const navByRole: Record<Role, NavGroup[]> = {
     },
     account,
   ],
-  TECHNICIAN: officerGroups,
-  DEPARTMENT_OFFICER: officerGroups,
-  OFFICER: officerGroups,
+  TECHNICIAN: technicianGroups,
+  DEPARTMENT_OFFICER: departmentOfficerGroups,
+  OFFICER: legacyOfficerGroups,
   ADMIN: [
     {
       label: "Admin",
       items: [
-        { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
+        { title: "All Complaints", href: "/admin/complaints", icon: ClipboardList },
         { title: "Users", href: "/admin/users", icon: Users },
       ],
     },

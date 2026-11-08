@@ -152,6 +152,7 @@ export interface Complaint {
   address: string;
   latitude?: number | null;
   longitude?: number | null;
+  imageUrls?: string[];
   status: ComplaintStatus;
   priority: Priority;
   paymentRequired: boolean;
@@ -167,6 +168,32 @@ export interface Complaint {
   citizen?: { id: string; name: string; email: string } | null;
   updates?: ComplaintUpdate[];
   payments?: Payment[];
+}
+
+export type AssignmentStatus =
+  | "ASSIGNED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "REJECTED";
+
+export interface Assignment {
+  id: string;
+  complaintId: string;
+  technicianId: string;
+  assignedById: string;
+  status: AssignmentStatus;
+  notes?: string | null;
+  assignedAt: string;
+  acceptedAt?: string | null;
+  completedAt?: string | null;
+  complaint: {
+    id: string;
+    trackingCode: string;
+    title: string;
+    status: ComplaintStatus;
+  };
+  technician?: { id: string; name: string; email: string };
+  assignedBy?: { id: string; name: string; email: string };
 }
 
 export interface ComplaintQuery {
@@ -188,6 +215,7 @@ export interface CreateComplaintInput {
   latitude?: number;
   longitude?: number;
   categoryId: string;
+  images?: File[];
 }
 
 export interface Feedback {

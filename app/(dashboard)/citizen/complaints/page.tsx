@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { ClipboardList, Plus } from "lucide-react";
+import { useState } from "react";
+import { ClipboardList, MapPin, Plus, Search } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { LinkButton } from "@/components/ui/button";
 import {
@@ -12,11 +13,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMyComplaints } from "@/hooks/useComplaints";
 
 export default function CitizenComplaintsPage() {
-  const { data, isLoading, isError } = useMyComplaints({ page: 1, limit: 100 });
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data, isLoading, isError } = useMyComplaints({
+    page: 1,
+    limit: 100,
+    searchTerm: searchTerm.trim() || undefined,
+  });
 
   return (
     <div className="space-y-6">
@@ -31,6 +38,20 @@ export default function CitizenComplaintsPage() {
           <Plus aria-hidden="true" />
           Report an issue
         </LinkButton>
+      </div>
+
+      <div className="relative max-w-md">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <Input
+          aria-label="Search my complaints"
+          className="pl-9"
+          placeholder="Search title, tracking code, or location"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
       </div>
 
       {isLoading ? (
@@ -50,15 +71,24 @@ export default function CitizenComplaintsPage() {
         <Card>
           <CardHeader className="items-center text-center">
             <ClipboardList className="mb-2 size-8 text-muted-foreground" aria-hidden="true" />
-            <CardTitle>No complaints yet</CardTitle>
-            <CardDescription>Report an issue to start tracking its progress.</CardDescription>
+            <CardTitle>{searchTerm ? "No matching complaints" : "No complaints yet"}</CardTitle>
+            <CardDescription>
+              {searchTerm
+                ? "Try another title, tracking code, or location."
+                : "Report an issue to start tracking its progress."}
+            </CardDescription>
           </CardHeader>
-          <CardContent className="flex justify-center">
-            <LinkButton href="/citizen/complaints/create-poster">Report an issue</LinkButton>
-          </CardContent>
+          {!searchTerm && (
+            <CardContent className="flex justify-center">
+              <LinkButton href="/citizen/complaints/create-poster">Report an issue</LinkButton>
+            </CardContent>
+          )}
         </Card>
       ) : (
-        <div className="grid gap-3">
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Showing {data.data.length} of {data.meta?.total ?? data.data.length} complaints
+          </p>
           {data.data.map((complaint) => (
             <Card key={complaint.id}>
               <CardHeader className="flex flex-row items-start justify-between gap-3">
@@ -77,6 +107,24 @@ export default function CitizenComplaintsPage() {
                 </div>
                 <ComplaintStatusBadge status={complaint.status} />
               </CardHeader>
+              <CardContent className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-muted-foreground">
+                  {complaint.category && <span>{complaint.category.name}</span>}
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="size-3.5" aria-hidden="true" />
+                    {complaint.address}
+                  </span>
+                  {!!complaint.imageUrls?.length && (
+                    <span>{complaint.imageUrls.length} attached photo{complaint.imageUrls.length === 1 ? "" : "s"}</span>
+                  )}
+                </div>
+                <Link
+                  href={`/citizen/tracking/${encodeURIComponent(complaint.trackingCode)}`}
+                  className="font-medium text-primary hover:underline"
+                >
+                  Track status
+                </Link>
+              </CardContent>
             </Card>
           ))}
         </div>

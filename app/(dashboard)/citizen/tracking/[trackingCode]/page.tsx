@@ -4,15 +4,17 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
+import { LinkButton } from "@/components/ui/button";
 import { useMyComplaints } from "@/hooks/useComplaints";
 
 export default function TrackingPage() {
   const params = useParams<{ trackingCode: string }>();
-  const code = decodeURIComponent(params.trackingCode ?? "");
+  const code = params.trackingCode?.trim() ?? "";
   const { data, isLoading, isError } = useMyComplaints({ searchTerm: code, limit: 100 });
   const complaint = useMemo(
     () =>
@@ -49,6 +51,36 @@ export default function TrackingPage() {
           </div>
           <ComplaintStatusBadge status={complaint.status} />
         </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <p className="whitespace-pre-line text-muted-foreground">{complaint.description}</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="size-3.5" aria-hidden="true" />
+              {complaint.address}
+            </span>
+            {complaint.category && <span>{complaint.category.name}</span>}
+            <span>Submitted {format(new Date(complaint.createdAt), "dd MMM yyyy, hh:mm a")}</span>
+          </div>
+          {!!complaint.imageUrls?.length && (
+            <div className="space-y-2 pt-2">
+              <h2 className="text-sm font-medium">Attached photos</h2>
+              <ul className="flex flex-wrap gap-2">
+                {complaint.imageUrls.map((imageUrl, index) => (
+                  <li key={imageUrl}>
+                    <a
+                      href={imageUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm text-primary underline underline-offset-4"
+                    >
+                      View photo {index + 1}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </CardContent>
       </Card>
       <Card>
         <CardHeader>
@@ -77,12 +109,18 @@ export default function TrackingPage() {
           )}
         </div>
       </Card>
-      <Link
-        href={`/citizen/complaints/${complaint.id}`}
-        className="text-sm text-primary hover:underline"
-      >
-        View full details
-      </Link>
+      <div className="flex flex-wrap gap-3">
+        <LinkButton href={`/citizen/complaints/${complaint.id}`} variant="outline">
+          View full details
+        </LinkButton>
+        <Link
+          href="/citizen/tracking"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Track another complaint
+        </Link>
+      </div>
     </div>
   );
 }

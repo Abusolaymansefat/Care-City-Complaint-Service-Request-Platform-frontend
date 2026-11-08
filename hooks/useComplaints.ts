@@ -7,7 +7,9 @@ import {
   createFeedback,
   createComplaint,
   fetchCategories,
+  fetchAssignments,
   fetchComplaint,
+  fetchComplaints,
   fetchDepartments,
   fetchMyComplaints,
 } from "@/lib/complaints";
@@ -20,10 +22,25 @@ import type {
   PaginationMeta,
 } from "@/types";
 
-export const useMyComplaints = (query: ComplaintQuery = {}) =>
+export const useMyComplaints = (query: ComplaintQuery = {}, enabled = true) =>
   useQuery({
     queryKey: ["complaints", "mine", query],
     queryFn: () => fetchMyComplaints(query),
+    enabled,
+  });
+
+export const useComplaints = (query: ComplaintQuery = {}, enabled = true) =>
+  useQuery({
+    queryKey: ["complaints", "all", query],
+    queryFn: () => fetchComplaints(query),
+    enabled,
+  });
+
+export const useAssignments = (query: { page?: number; limit?: number } = {}, enabled = true) =>
+  useQuery({
+    queryKey: ["assignments", query],
+    queryFn: () => fetchAssignments(query),
+    enabled,
   });
 
 export const useComplaint = (id?: string) =>

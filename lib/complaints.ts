@@ -1,6 +1,7 @@
 import { api } from "@/lib/api";
 import type {
   Category,
+  Assignment,
   Complaint,
   ComplaintQuery,
   CreateComplaintInput,
@@ -15,13 +16,37 @@ type ApiListResponse<T> = {
 };
 
 export const createComplaint = async (input: CreateComplaintInput) => {
-  const response = await api.post<{ data: Complaint }>("/complaints/create-complaint", input);
+  const body = new FormData();
+  body.append("title", input.title);
+  body.append("description", input.description);
+  body.append("address", input.address);
+  body.append("categoryId", input.categoryId);
+  if (input.latitude !== undefined) body.append("latitude", String(input.latitude));
+  if (input.longitude !== undefined) body.append("longitude", String(input.longitude));
+  input.images?.forEach((image) => body.append("images", image));
+
+  const response = await api.post<{ data: Complaint }>("/complaints/create-complaint", body);
   return response.data.data;
 };
 
 export const fetchMyComplaints = async (params: ComplaintQuery) => {
   const response = await api.get<ApiListResponse<Complaint[]>>(
     "/complaints/get-my-complaints",
+    { params }
+  );
+  return { data: response.data.data, meta: response.data.meta };
+};
+
+export const fetchComplaints = async (params: ComplaintQuery) => {
+  const response = await api.get<ApiListResponse<Complaint[]>>("/complaints/get-complaints", {
+    params,
+  });
+  return { data: response.data.data, meta: response.data.meta };
+};
+
+export const fetchAssignments = async (params: { page?: number; limit?: number }) => {
+  const response = await api.get<ApiListResponse<Assignment[]>>(
+    "/assignments/get-assignments",
     { params }
   );
   return { data: response.data.data, meta: response.data.meta };

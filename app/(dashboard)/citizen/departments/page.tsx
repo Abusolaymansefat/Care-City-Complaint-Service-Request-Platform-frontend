@@ -6,7 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDepartments } from "@/hooks/useComplaints";
 
 export default function CitizenDepartmentsPage() {
-  const { data, isLoading } = useDepartments({ limit: 100 });
+  const { data, isLoading, isError } = useDepartments({ limit: 100 });
+  const departments = (data?.data ?? []).filter((department) => department.isActive);
 
   return (
     <div className="space-y-6">
@@ -23,16 +24,23 @@ export default function CitizenDepartmentsPage() {
             <Skeleton key={i} className="h-28 w-full rounded-xl" />
           ))}
         </div>
-      ) : !data?.data?.length ? (
+      ) : isError ? (
         <Card>
           <CardHeader>
-            <CardTitle>No departments</CardTitle>
-            <CardDescription>Departments will appear here once configured.</CardDescription>
+            <CardTitle>Could not load departments</CardTitle>
+            <CardDescription>Please refresh the page and try again.</CardDescription>
+          </CardHeader>
+        </Card>
+      ) : !departments.length ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>No active departments</CardTitle>
+            <CardDescription>Active city departments will appear here.</CardDescription>
           </CardHeader>
         </Card>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {data.data.map((department) => (
+          {departments.map((department) => (
             <Card key={department.id}>
               <CardHeader>
                 <CardTitle className="text-base">{department.name}</CardTitle>
@@ -40,10 +48,9 @@ export default function CitizenDepartmentsPage() {
                   {department.description ?? "No description provided."}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Badge variant={department.isActive ? "default" : "destructive"}>
-                  {department.isActive ? "Active" : "Inactive"}
-                </Badge>
+              <CardContent className="flex items-center justify-between gap-3">
+                <Badge variant="default">Active</Badge>
+                <span className="text-xs text-muted-foreground">City service department</span>
               </CardContent>
             </Card>
           ))}

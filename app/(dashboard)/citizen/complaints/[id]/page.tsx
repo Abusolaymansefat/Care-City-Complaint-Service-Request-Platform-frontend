@@ -65,6 +65,31 @@ export default function ComplaintDetailsPage() {
         </CardContent>
       </Card>
 
+      {!!complaint.imageUrls?.length && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Attached photos</CardTitle>
+            <CardDescription>Photos submitted with this complaint.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="flex flex-wrap gap-3">
+              {complaint.imageUrls.map((imageUrl, index) => (
+                <li key={imageUrl}>
+                  <a
+                    href={imageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-primary underline underline-offset-4"
+                  >
+                    View photo {index + 1}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Timeline</CardTitle>
