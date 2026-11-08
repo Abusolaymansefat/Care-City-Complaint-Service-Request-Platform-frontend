@@ -153,6 +153,7 @@ export interface Complaint {
   latitude?: number | null;
   longitude?: number | null;
   imageUrls?: string[];
+  videoUrls?: string[];
   status: ComplaintStatus;
   priority: Priority;
   paymentRequired: boolean;
@@ -215,6 +216,7 @@ export interface CreateComplaintInput {
   latitude?: number;
   longitude?: number;
   categoryId: string;
+  videos?: File[];
   images?: File[];
 }
 

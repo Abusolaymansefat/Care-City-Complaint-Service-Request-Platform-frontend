@@ -23,7 +23,8 @@ export const createComplaint = async (input: CreateComplaintInput) => {
   body.append("categoryId", input.categoryId);
   if (input.latitude !== undefined) body.append("latitude", String(input.latitude));
   if (input.longitude !== undefined) body.append("longitude", String(input.longitude));
-  input.images?.forEach((image) => body.append("images", image));
+  input.images?.forEach((image) => body.append("media", image));
+  input.videos?.forEach((video) => body.append("media", video));
 
   const response = await api.post<{ data: Complaint }>("/complaints/create-complaint", body);
   return response.data.data;

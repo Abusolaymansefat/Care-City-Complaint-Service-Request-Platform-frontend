@@ -18,10 +18,11 @@ const notificationKeys = {
   unread: ["notifications", "unread-count"] as const,
 };
 
-export const useNotifications = (query: NotificationQuery) =>
+export const useNotifications = (query: NotificationQuery, enabled = true) =>
   useQuery({
     queryKey: notificationKeys.list(query),
     queryFn: () => fetchMyNotifications(query),
+    enabled,
   });
 
 export const useUnreadCount = () =>

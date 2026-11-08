@@ -1,6 +1,6 @@
 import {
-  Bot,
   Bell,
+  Bot,
   Building2,
   ClipboardList,
   CreditCard,
@@ -49,8 +49,8 @@ const technicianGroups: NavGroup[] = [
   {
     label: "Work",
     items: [
-      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { title: "My Assignments", href: "/complaints", icon: ListChecks },
+      { title: "Dashboard", href: "/technician/dashboard", icon: LayoutDashboard },
+      { title: "My Assignments", href: "/technician/assignments", icon: ListChecks },
     ],
   },
   account,
@@ -60,8 +60,8 @@ const departmentOfficerGroups: NavGroup[] = [
   {
     label: "Department",
     items: [
-      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { title: "Department Complaints", href: "/complaints", icon: ListChecks },
+      { title: "Dashboard", href: "/officer/dashboard", icon: LayoutDashboard },
+      { title: "Department Complaints", href: "/officer/complaints", icon: ListChecks },
     ],
   },
   account,
@@ -72,12 +72,12 @@ export const navByRole: Record<Role, NavGroup[]> = {
     {
       label: "Menu",
       items: [
-        { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { title: "Home", href: "/dashboard", icon: LayoutDashboard },
         { title: "Departments", href: "/citizen/departments", icon: Building2 },
-        { title: "Categories", href: "/citizen/categories", icon: Tags },
+        { title: "Service requests", href: "/citizen/service-requests", icon: Tags },
         { title: "My Complaints", href: "/citizen/complaints", icon: ClipboardList },
-        { title: "Create Poster", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
-        { title: "Track Complaint", href: "/citizen/tracking", icon: Search },
+        { title: "Submit Complaint", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
+        { title: "Complaint Tracking", href: "/citizen/tracking", icon: Search },
         { title: "AI Issue Guide", href: "/citizen/ai", icon: Bot },
         { title: "Payments", href: "/payments", icon: CreditCard },
       ],

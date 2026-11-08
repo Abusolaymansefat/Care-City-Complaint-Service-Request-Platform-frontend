@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { ClipboardList, MapPin, Plus, Search } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
-import { LinkButton } from "@/components/ui/button";
+import { Button, LinkButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,9 +19,10 @@ import { useMyComplaints } from "@/hooks/useComplaints";
 
 export default function CitizenComplaintsPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useMyComplaints({
-    page: 1,
-    limit: 100,
+    page,
+    limit: 10,
     searchTerm: searchTerm.trim() || undefined,
   });
 
@@ -50,7 +51,10 @@ export default function CitizenComplaintsPage() {
           className="pl-9"
           placeholder="Search title, tracking code, or location"
           value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            setPage(1);
+          }}
         />
       </div>
 
@@ -117,6 +121,9 @@ export default function CitizenComplaintsPage() {
                   {!!complaint.imageUrls?.length && (
                     <span>{complaint.imageUrls.length} attached photo{complaint.imageUrls.length === 1 ? "" : "s"}</span>
                   )}
+                  {!!complaint.videoUrls?.length && (
+                    <span>{complaint.videoUrls.length} attached video{complaint.videoUrls.length === 1 ? "" : "s"}</span>
+                  )}
                 </div>
                 <Link
                   href={`/citizen/tracking/${encodeURIComponent(complaint.trackingCode)}`}
@@ -127,6 +134,30 @@ export default function CitizenComplaintsPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {data?.meta && data.meta.totalPages > 1 && (
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Page {data.meta.page} of {data.meta.totalPages} · {data.meta.total} complaints
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              isDisabled={page <= 1 || isLoading}
+              onPress={() => setPage((current) => current - 1)}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              isDisabled={page >= data.meta.totalPages || isLoading}
+              onPress={() => setPage((current) => current + 1)}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       )}
     </div>

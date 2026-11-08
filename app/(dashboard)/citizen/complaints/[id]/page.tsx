@@ -90,6 +90,28 @@ export default function ComplaintDetailsPage() {
         </Card>
       )}
 
+      {!!complaint.videoUrls?.length && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Attached videos</CardTitle>
+            <CardDescription>Videos submitted with this complaint.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-3 sm:grid-cols-2">
+            {complaint.videoUrls.map((videoUrl) => (
+              <video
+                key={videoUrl}
+                src={videoUrl}
+                controls
+                preload="metadata"
+                className="max-h-64 w-full rounded-lg border bg-black"
+              >
+                <a href={videoUrl}>Download video</a>
+              </video>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Timeline</CardTitle>

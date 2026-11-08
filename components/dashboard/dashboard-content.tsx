@@ -2,201 +2,212 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { ArrowRight, ClipboardList, FilePlus2, Search, Tags } from "lucide-react";
+import { ArrowRight, Bell, ClipboardList, FilePlus2, Wrench } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
+import OperationsDashboard from "@/components/dashboard/operations-dashboard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMyComplaints } from "@/hooks/useComplaints";
-import OperationsDashboard from "@/components/dashboard/operations-dashboard";
+import { useNotifications } from "@/hooks/useNotifications";
 import { useMounted } from "@/hooks/useMounted";
 import { useAuthStore } from "@/store/auth.store";
 
-const citizenStats = ["Total complaints", "Submitted", "In progress", "Resolved"];
-
 const shortcuts = [
-  { label: "Create a complaint", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
-  { label: "My complaints", href: "/citizen/complaints", icon: ClipboardList },
-  { label: "Track a complaint", href: "/citizen/tracking", icon: Search },
-  { label: "Browse categories", href: "/citizen/categories", icon: Tags },
+  { label: "New complaint", description: "Report a city issue", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
+  { label: "Service requests", description: "Browse city services", href: "/citizen/service-requests", icon: Wrench },
+  { label: "My complaints", description: "View your requests", href: "/citizen/complaints", icon: ClipboardList },
+  { label: "Notices", description: "Latest updates", href: "/notifications", icon: Bell },
 ];
 
 export default function DashboardContent() {
   const user = useAuthStore((state) => state.user);
   const mounted = useMounted();
   const isCitizen = mounted && user?.role === "CITIZEN";
-  const enabled = Boolean(isCitizen);
-  const recentComplaints = useMyComplaints({ page: 1, limit: 5 }, enabled);
-  const totalComplaints = useMyComplaints({ page: 1, limit: 1 }, enabled);
-  const submittedComplaints = useMyComplaints(
-    { page: 1, limit: 1, status: "SUBMITTED" },
-    enabled
-  );
-  const inProgressComplaints = useMyComplaints(
+  const recentComplaints = useMyComplaints({ page: 1, limit: 5 }, Boolean(isCitizen));
+  const complaintTotal = useMyComplaints({ page: 1, limit: 1 }, Boolean(isCitizen));
+  const inProgress = useMyComplaints(
     { page: 1, limit: 1, status: "IN_PROGRESS" },
-    enabled
+    Boolean(isCitizen)
   );
-  const resolvedComplaints = useMyComplaints(
+  const resolved = useMyComplaints(
     { page: 1, limit: 1, status: "RESOLVED" },
-    enabled
+    Boolean(isCitizen)
   );
-  const statQueries = [
-    { label: "Total complaints", query: totalComplaints },
-    { label: "Submitted", query: submittedComplaints },
-    { label: "In progress", query: inProgressComplaints },
-    { label: "Resolved", query: resolvedComplaints },
-  ];
+  const notices = useNotifications({ page: 1, limit: 4 }, Boolean(isCitizen));
 
   if (!mounted) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-16 w-full max-w-md" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {citizenStats.map((label) => <Skeleton key={label} className="h-28 rounded-xl" />)}
+          {[0, 1, 2, 3].map((item) => <Skeleton key={item} className="h-28 rounded-xl" />)}
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">
-          Welcome{user ? `, ${user.name}` : ""}
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          {isCitizen
-            ? "Here is the latest activity on your city service requests."
-            : "Your CityCare workspace is ready."}
-        </p>
-      </div>
+  if (user?.role === "TECHNICIAN" || user?.role === "DEPARTMENT_OFFICER") {
+    return <OperationsDashboard />;
+  }
 
-      {isCitizen ? (
-        <>
-          {statQueries.some(({ query }) => query.isError) && (
-            <Card role="alert">
-              <CardHeader>
-                <CardTitle>Could not load your overview</CardTitle>
-                <CardDescription>
-                  Complaint statistics are temporarily unavailable. Please refresh to try again.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          )}
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {statQueries.map(({ label, query }) => {
-              return (
-                <Card key={label}>
-                  <CardHeader>
-                    <CardDescription>{label}</CardDescription>
-                    {query.isLoading ? (
-                      <Skeleton className="h-9 w-16" />
-                    ) : user?.role === "TECHNICIAN" || user?.role === "DEPARTMENT_OFFICER" ? (
-                      <OperationsDashboard />
-                    ) : (
-                      <CardTitle className="text-3xl">
-                        {query.data?.meta?.total ?? query.data?.data.length ?? 0}
-                      </CardTitle>
-                    )}
-                  </CardHeader>
-                </Card>
-              );
-            })}
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {shortcuts.map(({ label, href, icon: Icon }) => (
-              <Link key={href} href={href} className="group">
-                <Card className="h-full transition-colors group-hover:border-primary/50">
-                  <CardContent className="flex items-center justify-between gap-3 pt-5">
-                    <span className="flex items-center gap-3 text-sm font-medium">
-                      <Icon className="size-4 text-primary" aria-hidden="true" />
-                      {label}
-                    </span>
-                    <ArrowRight
-                      className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1"
-                      aria-hidden="true"
-                    />
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-3">
-              <div>
-                <CardTitle>Recent complaints</CardTitle>
-                <CardDescription>Your latest submitted service requests.</CardDescription>
-              </div>
-              <Link
-                href="/citizen/complaints"
-                className="shrink-0 text-sm text-primary hover:underline"
-              >
-                View all
-              </Link>
-            </CardHeader>
-            <CardContent>
-              {recentComplaints.isLoading ? (
-                <div className="space-y-3">
-                  {[0, 1, 2].map((item) => <Skeleton key={item} className="h-14 w-full" />)}
-                </div>
-              ) : recentComplaints.isError ? (
-                <p role="alert" className="text-sm text-destructive">
-                  Could not load recent complaints. Please refresh and try again.
-                </p>
-              ) : !recentComplaints.data?.data.length ? (
-                <p className="text-sm text-muted-foreground">You have not submitted a complaint yet.</p>
-              ) : (
-                <ul className="divide-y">
-                  {recentComplaints.data.data.map((complaint) => (
-                    <li
-                      key={complaint.id}
-                      className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
-                    >
-                      <div className="min-w-0">
-                        <Link
-                          href={`/citizen/complaints/${complaint.id}`}
-                          className="block truncate text-sm font-medium hover:underline"
-                        >
-                          {complaint.title}
-                        </Link>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {complaint.trackingCode} · {format(new Date(complaint.createdAt), "dd MMM yyyy")}
-                        </p>
-                      </div>
-                      <ComplaintStatusBadge status={complaint.status} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment information</CardTitle>
-              <CardDescription>
-                The first 2 complaints are free. From the 3rd complaint, a 10 BDT fee may apply.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/payments" className="text-sm text-primary hover:underline">
-                View my payments
-              </Link>
-            </CardContent>
-          </Card>
-        </>
-      ) : (
+  if (!isCitizen) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold">Welcome{user ? `, ${user.name}` : ""}</h1>
+          <p className="mt-1 text-muted-foreground">Your CityCare workspace is ready.</p>
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>{user?.role.replaceAll("_", " ") ?? "Dashboard"}</CardTitle>
-            <CardDescription>
-              Use the navigation menu to access the tools available for your account.
-            </CardDescription>
+            <CardDescription>Use the navigation menu to access your account tools.</CardDescription>
           </CardHeader>
         </Card>
+      </div>
+    );
+  }
+
+  const stats = [
+    { label: "Total complaints", query: complaintTotal },
+    { label: "In progress", query: inProgress },
+    { label: "Resolved", query: resolved },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold">Welcome{user ? `, ${user.name}` : ""}</h1>
+        <p className="mt-1 text-muted-foreground">
+          Your city service requests and the latest notices, all in one place.
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        {stats.map(({ label, query }) => (
+          <Card key={label}>
+            <CardHeader>
+              <CardDescription>{label}</CardDescription>
+              {query.isLoading ? (
+                <Skeleton className="h-9 w-16" />
+              ) : (
+                <CardTitle className="text-3xl">
+                  {query.isError ? "—" : query.data?.meta?.total ?? 0}
+                </CardTitle>
+              )}
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+
+      {stats.some(({ query }) => query.isError) && (
+        <p role="alert" className="text-sm text-destructive">
+          Complaint summary could not be loaded. Please refresh to try again.
+        </p>
       )}
+
+      <section aria-labelledby="citizen-quick-actions">
+        <div className="mb-3">
+          <h2 id="citizen-quick-actions" className="text-lg font-semibold">Quick actions</h2>
+          <p className="text-sm text-muted-foreground">Start a request or find the information you need.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {shortcuts.map(({ label, description, href, icon: Icon }) => (
+            <Link key={href} href={href} className="group">
+              <Card className="h-full transition-colors group-hover:border-primary/50">
+                <CardContent className="flex items-start justify-between gap-3 pt-5">
+                  <span className="flex gap-3">
+                    <Icon className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+                    <span>
+                      <span className="block text-sm font-medium">{label}</span>
+                      <span className="mt-1 block text-xs text-muted-foreground">{description}</span>
+                    </span>
+                  </span>
+                  <ArrowRight
+                    className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>My recent complaints</CardTitle>
+              <CardDescription>Latest status of your submitted requests.</CardDescription>
+            </div>
+            <Link href="/citizen/complaints" className="shrink-0 text-sm text-primary hover:underline">
+              View all
+            </Link>
+          </CardHeader>
+          <CardContent>
+            {recentComplaints.isLoading ? (
+              <div className="space-y-3">
+                {[0, 1, 2].map((item) => <Skeleton key={item} className="h-14 w-full" />)}
+              </div>
+            ) : recentComplaints.isError ? (
+              <p role="alert" className="text-sm text-destructive">Could not load complaints.</p>
+            ) : !recentComplaints.data?.data.length ? (
+              <p className="text-sm text-muted-foreground">No complaints yet. Use New complaint to get started.</p>
+            ) : (
+              <ul className="divide-y">
+                {recentComplaints.data.data.map((complaint) => (
+                  <li key={complaint.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                    <div className="min-w-0">
+                      <Link href={`/citizen/complaints/${complaint.id}`} className="block truncate text-sm font-medium hover:underline">
+                        {complaint.title}
+                      </Link>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {complaint.trackingCode} · {format(new Date(complaint.createdAt), "dd MMM yyyy")}
+                      </p>
+                    </div>
+                    <ComplaintStatusBadge status={complaint.status} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>Notices</CardTitle>
+              <CardDescription>Recent updates from CityCare.</CardDescription>
+            </div>
+            <Link href="/notifications" className="shrink-0 text-sm text-primary hover:underline">
+              All notices
+            </Link>
+          </CardHeader>
+          <CardContent>
+            {notices.isLoading ? (
+              <div className="space-y-3">
+                {[0, 1, 2].map((item) => <Skeleton key={item} className="h-14 w-full" />)}
+              </div>
+            ) : notices.isError ? (
+              <p role="alert" className="text-sm text-destructive">Could not load notices.</p>
+            ) : !notices.data?.data.length ? (
+              <p className="text-sm text-muted-foreground">No notices yet. Updates will appear here.</p>
+            ) : (
+              <ul className="divide-y">
+                {notices.data.data.map((notice) => (
+                  <li key={notice.id} className="py-3 first:pt-0 last:pb-0">
+                    <p className="text-sm font-medium">{notice.title}</p>
+                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{notice.message}</p>
+                    <time className="mt-2 block text-xs text-muted-foreground" dateTime={notice.createdAt}>
+                      {format(new Date(notice.createdAt), "dd MMM yyyy, hh:mm a")}
+                    </time>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

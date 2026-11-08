@@ -3,8 +3,9 @@
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { ArrowLeft, FilePlus2, ImagePlus, X } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, FilePlus2, ImagePlus, MapPin, Video, X } from "lucide-react";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,15 +17,25 @@ import {
   complaintImageLimit,
   complaintImageSizeLimit,
   complaintImageTypes,
+  complaintVideoLimit,
+  complaintVideoSizeLimit,
+  complaintVideoTypes,
   createComplaintSchema,
   type CreateComplaintFormValues,
 } from "@/lib/validations/complaint";
+
+const LocationPicker = dynamic(() => import("@/components/complaints/location-picker"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-72 w-full rounded-xl" />,
+});
 
 export default function CreatePosterPage() {
   const router = useRouter();
   const { data, isLoading, isError } = useCategories({ limit: 100, isActive: true });
   const createComplaint = useCreateComplaint();
   const imageInput = useRef<HTMLInputElement>(null);
+  const videoInput = useRef<HTMLInputElement>(null);
+  const [locationMessage, setLocationMessage] = useState("");
   const {
     register,
     control,
@@ -43,7 +54,41 @@ export default function CreatePosterPage() {
   });
   const description = useWatch({ control, name: "description" }) ?? "";
   const images = useWatch({ control, name: "images" }) ?? [];
-  const categories = data?.data ?? [];
+  const videos = useWatch({ control, name: "videos" }) ?? [];
+  const latitude = useWatch({ control, name: "latitude" }) ?? null;
+  const longitude = useWatch({ control, name: "longitude" }) ?? null;
+  const categories = useMemo(() => data?.data ?? [], [data?.data]);
+
+  useEffect(() => {
+    const categoryId = new URLSearchParams(window.location.search).get("categoryId");
+    if (categoryId && categories.some((category) => category.id === categoryId)) {
+      setValue("categoryId", categoryId, { shouldValidate: true });
+    }
+  }, [categories, setValue]);
+
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationMessage("Your browser does not support location access. Select a point on the map.");
+      return;
+    }
+
+    setLocationMessage("Getting your location...");
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setValue("latitude", coords.latitude, { shouldValidate: true });
+        setValue("longitude", coords.longitude, { shouldValidate: true });
+        setLocationMessage("Current location selected. Click the map to adjust it.");
+      },
+      () => setLocationMessage("Location access was unavailable. Select a point on the map instead."),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  const setMapLocation = (nextLatitude: number, nextLongitude: number) => {
+    setValue("latitude", nextLatitude, { shouldValidate: true });
+    setValue("longitude", nextLongitude, { shouldValidate: true });
+    setLocationMessage("Map location selected.");
+  };
 
   const submitComplaint = (values: CreateComplaintFormValues) =>
     createComplaint.mutate(values, {
@@ -136,6 +181,32 @@ export default function CreatePosterPage() {
                 {errors.address && <p role="alert" className="text-sm text-destructive">{errors.address.message}</p>}
               </div>
 
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <Label>Pin the issue on the map</Label>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Choose a map point or use your current location. The address above is still required.
+                    </p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onPress={useCurrentLocation}>
+                    <MapPin aria-hidden="true" />
+                    Use my location
+                  </Button>
+                </div>
+                <LocationPicker
+                  latitude={latitude}
+                  longitude={longitude}
+                  onSelect={setMapLocation}
+                />
+                {locationMessage && <p className="text-xs text-muted-foreground">{locationMessage}</p>}
+                {latitude !== null && longitude !== null && (
+                  <p className="text-xs text-muted-foreground">
+                    Selected: {latitude.toFixed(5)}, {longitude.toFixed(5)}
+                  </p>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="complaint-category">Service category</Label>
                 <select
@@ -172,7 +243,10 @@ export default function CreatePosterPage() {
                       multiple
                       className="block w-full cursor-pointer rounded-lg border border-input bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1 file:text-primary-foreground"
                       onChange={(event) => {
-                        field.onChange(Array.from(event.currentTarget.files ?? []));
+                        field.onChange([
+                          ...field.value,
+                          ...Array.from(event.currentTarget.files ?? []),
+                        ]);
                         event.currentTarget.value = "";
                       }}
                     />
@@ -210,6 +284,74 @@ export default function CreatePosterPage() {
                               { shouldValidate: true }
                             );
                             if (imageInput.current) imageInput.current.value = "";
+                          }}
+                        >
+                          <X aria-hidden="true" />
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="complaint-videos">Issue videos (optional)</Label>
+                <Controller
+                  name="videos"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      ref={(element) => {
+                        field.ref(element);
+                        videoInput.current = element;
+                      }}
+                      id="complaint-videos"
+                      type="file"
+                      accept={complaintVideoTypes.join(",")}
+                      multiple
+                      className="block w-full cursor-pointer rounded-lg border border-input bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1 file:text-primary-foreground"
+                      onChange={(event) => {
+                        field.onChange([
+                          ...field.value,
+                          ...Array.from(event.currentTarget.files ?? []),
+                        ]);
+                        event.currentTarget.value = "";
+                      }}
+                    />
+                  )}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Up to {complaintVideoLimit} MP4, WebM, or QuickTime videos, {complaintVideoSizeLimit / 1024 / 1024} MB each.
+                </p>
+                {errors.videos?.message && (
+                  <p role="alert" className="text-sm text-destructive">{errors.videos.message}</p>
+                )}
+                {videos.length > 0 && (
+                  <ul className="space-y-2">
+                    {videos.map((video, index) => (
+                      <li
+                        key={`${video.name}-${video.lastModified}`}
+                        className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm"
+                      >
+                        <span className="flex min-w-0 items-center gap-2">
+                          <Video className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                          <span className="truncate">{video.name}</span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {(video.size / 1024 / 1024).toFixed(1)} MB
+                          </span>
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Remove ${video.name}`}
+                          onPress={() => {
+                            setValue(
+                              "videos",
+                              videos.filter((_, videoIndex) => videoIndex !== index),
+                              { shouldValidate: true }
+                            );
+                            if (videoInput.current) videoInput.current.value = "";
                           }}
                         >
                           <X aria-hidden="true" />

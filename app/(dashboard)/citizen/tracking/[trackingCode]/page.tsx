@@ -23,6 +23,18 @@ export default function TrackingPage() {
       ),
     [data, code]
   );
+  const timeline = useMemo(() => {
+    if (!complaint) return [];
+    return [
+      {
+        id: "submitted",
+        status: "SUBMITTED" as const,
+        comment: "Complaint submitted",
+        createdAt: complaint.createdAt,
+      },
+      ...(complaint.updates ?? []),
+    ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  }, [complaint]);
 
   if (isLoading) return <Skeleton className="h-56 w-full" />;
 
@@ -80,6 +92,24 @@ export default function TrackingPage() {
               </ul>
             </div>
           )}
+          {!!complaint.videoUrls?.length && (
+            <div className="space-y-2 pt-2">
+              <h2 className="text-sm font-medium">Attached videos</h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {complaint.videoUrls.map((videoUrl) => (
+                  <video
+                    key={videoUrl}
+                    src={videoUrl}
+                    controls
+                    preload="metadata"
+                    className="max-h-64 w-full rounded-lg border bg-black"
+                  >
+                    <a href={videoUrl}>Download video</a>
+                  </video>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
       <Card>
@@ -87,11 +117,8 @@ export default function TrackingPage() {
           <CardTitle className="text-base">Timeline</CardTitle>
         </CardHeader>
         <div className="space-y-4 px-6 pb-6">
-          {!complaint.updates?.length ? (
-            <p className="text-sm text-muted-foreground">No updates yet.</p>
-          ) : (
-            complaint.updates.map((update) => (
-              <div key={update.id} className="flex gap-3">
+          {timeline.map((update) => (
+              <div key={update.id} className="relative flex gap-3 pb-2 last:pb-0">
                 <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true" />
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -105,8 +132,7 @@ export default function TrackingPage() {
                   )}
                 </div>
               </div>
-            ))
-          )}
+            ))}
         </div>
       </Card>
       <div className="flex flex-wrap gap-3">
