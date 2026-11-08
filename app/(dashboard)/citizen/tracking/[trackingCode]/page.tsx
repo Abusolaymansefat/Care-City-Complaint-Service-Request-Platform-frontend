@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ComplaintStatusBadge } from "@/components/complaints/complaint-status-badge";
+import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { useMyComplaints } from "@/hooks/useComplaints";
 
 export default function TrackingPage() {

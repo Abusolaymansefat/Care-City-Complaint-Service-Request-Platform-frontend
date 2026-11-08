@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ComplaintStatusBadge, PriorityBadge } from "@/components/complaints/complaint-status-badge";
+import { ComplaintStatusBadge, PriorityBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { useComplaint } from "@/hooks/useComplaints";
 import { PaymentStatusBadge } from "@/components/payments/payment-status-badge";
 

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { getApiError } from "@/lib/auth";
 import {
   createFeedback,
+  createComplaint,
   fetchCategories,
   fetchComplaint,
   fetchDepartments,
@@ -14,6 +15,7 @@ import type {
   Category,
   Complaint,
   ComplaintQuery,
+  CreateComplaintInput,
   Department,
   PaginationMeta,
 } from "@/types";
@@ -42,6 +44,19 @@ export const useDepartments = (query: { limit?: number } = {}) =>
     queryKey: ["departments", query],
     queryFn: () => fetchDepartments(query),
   });
+
+export const useCreateComplaint = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateComplaintInput) => createComplaint(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["complaints", "mine"] });
+      toast.success("Your complaint has been submitted.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
 
 export const useCreateFeedback = () => {
   const queryClient = useQueryClient();

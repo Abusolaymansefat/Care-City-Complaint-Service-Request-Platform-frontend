@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCategories } from "@/hooks/useComplaints";
 
 export default function CitizenCategoriesPage() {
-  const { data, isLoading } = useCategories({ limit: 100, isActive: true });
+  const { data, isLoading, isError } = useCategories({ limit: 100, isActive: true });
 
   return (
     <div className="space-y-6">
@@ -23,6 +23,13 @@ export default function CitizenCategoriesPage() {
             <Skeleton key={i} className="h-32 w-full rounded-xl" />
           ))}
         </div>
+      ) : isError ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Could not load categories</CardTitle>
+            <CardDescription>Please refresh the page and try again.</CardDescription>
+          </CardHeader>
+        </Card>
       ) : !data?.data?.length ? (
         <Card>
           <CardHeader>

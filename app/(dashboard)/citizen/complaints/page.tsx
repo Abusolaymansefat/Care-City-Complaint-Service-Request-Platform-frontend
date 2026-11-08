@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { ClipboardList, Plus } from "lucide-react";
-import { ComplaintStatusBadge } from "@/components/complaints/complaint-status-badge";
+import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { LinkButton } from "@/components/ui/button";
 import {
   Card,

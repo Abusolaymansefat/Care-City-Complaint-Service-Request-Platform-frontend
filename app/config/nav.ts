@@ -1,12 +1,14 @@
 import {
+  Bot,
   Bell,
-  Building2,
   ClipboardList,
   CreditCard,
   FilePlus2,
   LayoutDashboard,
   ListChecks,
   Settings,
+  Tags,
+  Search,
   UserCircle,
   Users,
   type LucideIcon,
@@ -26,7 +28,7 @@ export interface NavGroup {
 const account: NavGroup = {
   label: "Account",
   items: [
-     { title: "Notifications", href: "/notifications", icon: Bell },
+    { title: "Notifications", href: "/notifications", icon: Bell },
     { title: "Profile", href: "/profile", icon: UserCircle },
     { title: "Settings", href: "/settings", icon: Settings },
   ],
@@ -49,9 +51,12 @@ export const navByRole: Record<Role, NavGroup[]> = {
       label: "Menu",
       items: [
         { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-        { title: "My Complaints", href: "/complaints", icon: ClipboardList },
+        { title: "Categories", href: "/citizen/categories", icon: Tags },
+        { title: "My Complaints", href: "/citizen/complaints", icon: ClipboardList },
+        { title: "Create Poster", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
+        { title: "Track Complaint", href: "/citizen/tracking", icon: Search },
+        { title: "AI Issue Guide", href: "/citizen/ai", icon: Bot },
         { title: "Payments", href: "/payments", icon: CreditCard },
-        { title: "Report Issue", href: "/complaints/new", icon: FilePlus2 },
       ],
     },
     account,
@@ -63,10 +68,7 @@ export const navByRole: Record<Role, NavGroup[]> = {
     {
       label: "Admin",
       items: [
-        { title: "Overview", href: "/admin", icon: LayoutDashboard },
-        { title: "All Complaints", href: "/admin/complaints", icon: ClipboardList },
-        { title: "Payments", href: "/admin/payments", icon: CreditCard },
-        { title: "Departments", href: "/admin/departments", icon: Building2 },
+        { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
         { title: "Users", href: "/admin/users", icon: Users },
       ],
     },

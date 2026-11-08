@@ -3,6 +3,7 @@ import type {
   Category,
   Complaint,
   ComplaintQuery,
+  CreateComplaintInput,
   Department,
   Feedback,
   PaginationMeta,
@@ -11,6 +12,11 @@ import type {
 type ApiListResponse<T> = {
   data: T;
   meta?: PaginationMeta;
+};
+
+export const createComplaint = async (input: CreateComplaintInput) => {
+  const response = await api.post<{ data: Complaint }>("/complaints/create-complaint", input);
+  return response.data.data;
 };
 
 export const fetchMyComplaints = async (params: ComplaintQuery) => {
