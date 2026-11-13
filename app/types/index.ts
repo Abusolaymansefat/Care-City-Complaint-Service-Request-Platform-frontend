@@ -5,17 +5,38 @@ export type Role =
   | "OFFICER"
   | "ADMIN";
 
+export type UserStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED" | "BANNED";
+
 export interface User {
   id: string;
   name: string;
   email: string;
   role: Role;
-  status: string;
+  status: UserStatus;
   emailVerified: boolean;
   imageUrl?: string | null;
   needPasswordChange?: boolean;
   departmentId?: string | null;
   department?: { id: string; name: string } | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type ManagedUserRole = Exclude<Role, "OFFICER">;
+
+export interface UserQuery {
+  searchTerm?: string;
+  role?: ManagedUserRole;
+  status?: UserStatus;
+  page?: number;
+  limit?: number;
+}
+
+export interface UpdateUserInput {
+  id: string;
+  role?: ManagedUserRole;
+  status?: UserStatus;
+  departmentId?: string | null;
 }
 
 export interface AuthPayload {
@@ -63,6 +84,17 @@ export interface PaymentQuery {
   limit?: number;
   status?: PaymentStatus;
   complaintId?: string;
+  period?: PaymentPeriod;
+  sortBy?: "createdAt" | "updatedAt" | "amount" | "status";
+  sortOrder?: "asc" | "desc";
+}
+
+export type PaymentPeriod = "all" | "7d" | "1m" | "1y";
+
+export interface PaymentStats {
+  period: PaymentPeriod;
+  totalAmount: string;
+  paidCount: number;
 }
 
 export interface PaginationMeta {
@@ -206,6 +238,7 @@ export type AssignmentStatus =
   | "ASSIGNED"
   | "IN_PROGRESS"
   | "COMPLETED"
+  | "CANCELLED"
   | "REJECTED";
 
 export interface Assignment {

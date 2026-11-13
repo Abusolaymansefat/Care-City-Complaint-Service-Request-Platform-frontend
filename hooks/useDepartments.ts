@@ -1,5 +1,6 @@
 "use client";
 
+import { isAxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getApiError } from "@/lib/auth";
@@ -61,6 +62,12 @@ export const useDeleteDepartment = () => {
       void queryClient.invalidateQueries({ queryKey: ["departments"] });
       toast.success("Department deleted.");
     },
-    onError: (error) => toast.error(getApiError(error)),
+    onError: (error) => {
+      const message =
+        isAxiosError(error) && error.response?.status === 409
+          ? "This department has linked users, categories, or complaints. Reassign or remove them before deleting."
+          : getApiError(error);
+      toast.error(message);
+    },
   });
 };

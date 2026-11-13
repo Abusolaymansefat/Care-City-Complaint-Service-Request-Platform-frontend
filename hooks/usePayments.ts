@@ -5,22 +5,30 @@ import { toast } from "sonner";
 import { getApiError } from "@/lib/auth";
 import {
   fetchMyPayments,
+  fetchPaymentStats,
   fetchPaymentById,
   fetchPayments,
   initiatePayment,
 } from "@/lib/payments";
-import type { PaymentQuery } from "@/types";
+import type { PaymentPeriod, PaymentQuery } from "@/types";
 
-export const useMyPayments = (query: PaymentQuery) =>
+export const useMyPayments = (query: PaymentQuery, enabled = true) =>
   useQuery({
     queryKey: ["payments", "mine", query],
     queryFn: () => fetchMyPayments(query),
+    enabled,
   });
 
 export const useAdminPayments = (query: PaymentQuery) =>
   useQuery({
     queryKey: ["payments", "admin", query],
     queryFn: () => fetchPayments(query),
+  });
+
+export const useAdminPaymentStats = (period: PaymentPeriod) =>
+  useQuery({
+    queryKey: ["payments", "admin", "stats", period],
+    queryFn: () => fetchPaymentStats(period),
   });
 
 export const usePayment = (id?: string) =>

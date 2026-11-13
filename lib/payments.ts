@@ -1,5 +1,11 @@
 import { api } from "@/lib/api";
-import type { PaginationMeta, Payment, PaymentQuery } from "@/types";
+import type {
+  PaginationMeta,
+  Payment,
+  PaymentPeriod,
+  PaymentQuery,
+  PaymentStats,
+} from "@/types";
 
 type ApiListResponse<T> = {
   data: T;
@@ -18,6 +24,13 @@ export const fetchPayments = async (params: PaymentQuery) => {
     params,
   });
   return { data: res.data.data, meta: res.data.meta };
+};
+
+export const fetchPaymentStats = async (period: PaymentPeriod) => {
+  const res = await api.get<{ data: PaymentStats }>("/payments/get-payment-stats", {
+    params: { period },
+  });
+  return res.data.data;
 };
 
 export const fetchPaymentById = async (id: string) => {

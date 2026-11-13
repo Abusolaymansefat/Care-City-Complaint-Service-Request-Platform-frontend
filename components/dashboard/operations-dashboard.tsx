@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { ClipboardList, Clock3, Wrench } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { Badge } from "@/components/ui/badge";
+import { DashboardBarChart } from "@/components/dashboard/dashboard-bar-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAssignments, useComplaints } from "@/hooks/useComplaints";
@@ -83,6 +84,32 @@ export default function OperationsDashboard() {
   const completedCount = isTechnician
     ? assignmentRows.filter((item) => item.status === "COMPLETED").length
     : (resolvedComplaints.data?.meta?.total ?? 0) + (closedComplaints.data?.meta?.total ?? 0);
+  const chartItems = isTechnician
+    ? [
+        { label: "Assigned", value: assignmentRows.filter((item) => item.status === "ASSIGNED").length },
+        { label: "In progress", value: assignmentRows.filter((item) => item.status === "IN_PROGRESS").length },
+        { label: "Completed", value: assignmentRows.filter((item) => item.status === "COMPLETED").length },
+        {
+          label: "Cancelled or rejected",
+          value: assignmentRows.filter((item) => item.status === "CANCELLED" || item.status === "REJECTED").length,
+        },
+      ]
+    : [
+        { label: "All department complaints", value: complaintTotal.data?.meta?.total ?? 0 },
+        { label: "In progress", value: inProgressComplaints.data?.meta?.total ?? 0 },
+        { label: "Resolved", value: resolvedComplaints.data?.meta?.total ?? 0 },
+        { label: "Closed", value: closedComplaints.data?.meta?.total ?? 0 },
+      ];
+  const chartLoading = isTechnician
+    ? assignments.isLoading
+    : [complaintTotal, inProgressComplaints, resolvedComplaints, closedComplaints].some(
+        (query) => query.isLoading,
+      );
+  const chartError = isTechnician
+    ? assignments.isError
+    : [complaintTotal, inProgressComplaints, resolvedComplaints, closedComplaints].some(
+        (query) => query.isError,
+      );
 
   const stats = [
     {
@@ -160,6 +187,18 @@ export default function OperationsDashboard() {
           </Card>
         ))}
       </div>
+
+      <DashboardBarChart
+        title={isTechnician ? "Assignment status chart" : "Department complaint metrics"}
+        description={
+          isTechnician
+            ? "Status counts for your latest 100 assignments."
+            : "In-progress, resolved, and closed counts are included in the total."
+        }
+        items={chartItems}
+        isLoading={chartLoading}
+        isError={chartError}
+      />
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-3">

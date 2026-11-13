@@ -4,11 +4,14 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { ArrowRight, Bell, ClipboardList, FilePlus2, Wrench } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
+import { DashboardBarChart } from "@/components/dashboard/dashboard-bar-chart";
 import OperationsDashboard from "@/components/dashboard/operations-dashboard";
+import { PaymentStatusBadge } from "@/components/payments/payment-status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMyComplaints } from "@/hooks/useComplaints";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useMyPayments } from "@/hooks/usePayments";
 import { useMounted } from "@/hooks/useMounted";
 import { useAuthStore } from "@/store/auth.store";
 
@@ -33,6 +36,7 @@ export default function DashboardContent() {
     { page: 1, limit: 1, status: "RESOLVED" },
     Boolean(isCitizen)
   );
+  const payments = useMyPayments({ page: 1, limit: 4 }, Boolean(isCitizen));
   const notices = useNotifications({ page: 1, limit: 4 }, Boolean(isCitizen));
 
   if (!mounted) {
@@ -98,6 +102,18 @@ export default function DashboardContent() {
           </Card>
         ))}
       </div>
+
+      <DashboardBarChart
+        title="My complaint metrics"
+        description="In-progress and resolved counts are included in the total."
+        items={[
+          { label: "All complaints", value: complaintTotal.data?.meta?.total ?? 0 },
+          { label: "In progress", value: inProgress.data?.meta?.total ?? 0 },
+          { label: "Resolved", value: resolved.data?.meta?.total ?? 0 },
+        ]}
+        isLoading={complaintTotal.isLoading || inProgress.isLoading || resolved.isLoading}
+        isError={complaintTotal.isError || inProgress.isError || resolved.isError}
+      />
 
       {stats.some(({ query }) => query.isError) && (
         <p role="alert" className="text-sm text-destructive">
@@ -208,6 +224,51 @@ export default function DashboardContent() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-3">
+          <div>
+            <CardTitle>My recent payments</CardTitle>
+            <CardDescription>Your complaint fees and bKash transaction statuses.</CardDescription>
+          </div>
+          <Link href="/payments" className="shrink-0 text-sm text-primary hover:underline">
+            Payment history
+          </Link>
+        </CardHeader>
+        <CardContent>
+          {payments.isLoading ? (
+            <div className="space-y-3">
+              {[0, 1, 2].map((item) => <Skeleton key={item} className="h-14 w-full" />)}
+            </div>
+          ) : payments.isError ? (
+            <p role="alert" className="text-sm text-destructive">Could not load your payments.</p>
+          ) : !payments.data?.data.length ? (
+            <p className="text-sm text-muted-foreground">
+              Your payment transactions will appear here.
+            </p>
+          ) : (
+            <ul className="divide-y">
+              {payments.data.data.map((payment) => (
+                <li
+                  key={payment.id}
+                  className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                >
+                  <div className="min-w-0">
+                    <Link href={`/payments/${payment.id}`} className="block truncate text-sm font-medium hover:underline">
+                      {payment.complaint?.title ?? payment.invoiceNumber}
+                    </Link>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {payment.currency} {Number(payment.amount).toFixed(2)} ·{" "}
+                      {format(new Date(payment.createdAt), "dd MMM yyyy")}
+                    </p>
+                  </div>
+                  <PaymentStatusBadge status={payment.status} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
