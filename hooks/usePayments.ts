@@ -19,10 +19,11 @@ export const useMyPayments = (query: PaymentQuery, enabled = true) =>
     enabled,
   });
 
-export const useAdminPayments = (query: PaymentQuery) =>
+export const useAdminPayments = (query: PaymentQuery, enabled = true) =>
   useQuery({
     queryKey: ["payments", "admin", query],
     queryFn: () => fetchPayments(query),
+    enabled,
   });
 
 export const useAdminPaymentStats = (period: PaymentPeriod) =>

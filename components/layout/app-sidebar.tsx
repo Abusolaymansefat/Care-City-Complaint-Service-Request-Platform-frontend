@@ -39,12 +39,12 @@ export default function AppSidebar() {
     .sort((a, b) => b.length - a.length)[0];
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-white/10">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" href="/">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white text-[#0849a0]">
                 <Building2 className="size-4" />
               </div>
               <div className="grid flex-1 text-left leading-tight">
@@ -88,7 +88,7 @@ export default function AppSidebar() {
               <div className="flex items-center gap-2 px-2 py-1.5">
                 <Avatar className="size-8 rounded-lg">
                   <AvatarImage src={user.imageUrl ?? undefined} alt={`${user.name}'s profile`} />
-                  <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
+                  <AvatarFallback className="rounded-lg bg-white/15 text-white">{getInitials(user.name)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-medium">{user.name}</span>
@@ -100,7 +100,7 @@ export default function AppSidebar() {
               <SidebarMenuButton
                 onClick={handleLogout}
                 tooltip="Logout"
-                className="text-destructive hover:text-destructive"
+                className="text-white hover:bg-red-500/20 hover:text-white"
               >
                 <LogOut />
                 <span>Logout</span>

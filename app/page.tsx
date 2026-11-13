@@ -6,7 +6,9 @@ import {
   ClipboardList,
 } from "lucide-react";
 import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 import HomeBanner from "@/components/layout/home-banner";
+import ReportIssueLink from "@/components/layout/report-issue-link";
 
 const steps = [
   {
@@ -68,16 +70,22 @@ export default function Home() {
               <h2 className="text-2xl font-bold tracking-tight">Ready to make a difference?</h2>
               <p className="mt-2 text-muted-foreground">Create an account and let your city know what needs attention.</p>
             </div>
-            <Link
-              href="/register"
-              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/85"
-            >
-              Create your account
-              <ArrowRight className="size-4" />
-            </Link>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+              <ReportIssueLink className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/85">
+                Report a new complaint
+                <ArrowRight className="size-4" />
+              </ReportIssueLink>
+              <Link
+                href="/register"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border px-5 text-sm font-medium transition-colors hover:bg-accent"
+              >
+                Create your account
+              </Link>
+            </div>
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

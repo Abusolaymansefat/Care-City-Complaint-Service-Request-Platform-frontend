@@ -7,7 +7,7 @@ export interface DashboardChartItem {
 }
 
 const barColors = [
-  "bg-primary",
+  "bg-blue-600",
   "bg-sky-500",
   "bg-emerald-500",
   "bg-amber-500",
@@ -29,7 +29,7 @@ export function DashboardBarChart({
   const maxValue = Math.max(0, ...items.map(({ value }) => value));
 
   return (
-    <Card>
+    <Card className="border-0 bg-white shadow-sm ring-1 ring-slate-200/80 dark:bg-card dark:ring-border">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -42,6 +42,10 @@ export function DashboardBarChart({
         ) : isError ? (
           <p role="alert" className="text-sm text-destructive">
             Chart data could not be loaded.
+          </p>
+        ) : !items.length ? (
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            No activity to show yet.
           </p>
         ) : (
           <div className="space-y-4">

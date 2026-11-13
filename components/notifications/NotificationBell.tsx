@@ -25,7 +25,13 @@ export default function NotificationBell() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { data: unread } = useUnreadCount();
-  const { data, isLoading } = useNotifications({ page: 1, limit: 6 });
+  const {
+    data,
+    isLoading,
+    isError,
+    isFetching,
+    refetch,
+  } = useNotifications({ page: 1, limit: 6 });
   const markAll = useMarkAllAsRead();
 
   const count = unread ?? 0;
@@ -70,6 +76,18 @@ export default function NotificationBell() {
           <div className="space-y-2 p-2">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
+          </div>
+        ) : isError ? (
+          <div role="alert" className="p-4 text-center text-sm text-muted-foreground">
+            <p>Notifications could not be loaded.</p>
+            <button
+              type="button"
+              disabled={isFetching}
+              className="mt-2 font-medium text-primary hover:underline disabled:opacity-50"
+              onClick={() => void refetch()}
+            >
+              Try again
+            </button>
           </div>
         ) : notifications.length === 0 ? (
           <div className="p-4 text-center text-sm text-muted-foreground">

@@ -23,10 +23,10 @@ export default function Navbar() {
 
   const links = [
     { href: "/", label: "Home" },
-    ...(user
+    ...(user?.role === "CITIZEN"
       ? [
-          { href: "/complaints", label: "My Complaints" },
-          { href: "/complaints/new", label: "Report Issue" },
+          { href: "/citizen/complaints", label: "My Complaints" },
+          { href: "/citizen/complaints/create-poster", label: "Report Issue" },
         ]
       : []),
     ...(user?.role === "ADMIN" ? [{ href: "/admin", label: "Admin" }] : []),

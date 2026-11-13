@@ -5,6 +5,7 @@ import {
   ClipboardList,
   CreditCard,
   FilePlus2,
+  History,
   LayoutDashboard,
   ListChecks,
   Settings,
@@ -29,6 +30,7 @@ export interface NavGroup {
 const account: NavGroup = {
   label: "Account",
   items: [
+    { title: "History", href: "/history", icon: History },
     { title: "Notifications", href: "/notifications", icon: Bell },
     { title: "Profile", href: "/profile", icon: UserCircle },
     { title: "Settings", href: "/settings", icon: Settings },
@@ -51,7 +53,6 @@ const technicianGroups: NavGroup[] = [
     items: [
       { title: "Dashboard", href: "/technician/dashboard", icon: LayoutDashboard },
       { title: "My Assignments", href: "/technician/assignments", icon: ListChecks },
-      { title: "Work History", href: "/technician/work-history", icon: ClipboardList },
     ],
   },
   account,

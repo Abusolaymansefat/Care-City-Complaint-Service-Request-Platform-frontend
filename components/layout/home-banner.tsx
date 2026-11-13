@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play, ShieldCheck } from "lucide-react";
+import ReportIssueLink from "./report-issue-link";
 
 const slides = [
   {
@@ -98,13 +99,20 @@ export default function HomeBanner() {
             <p className="mt-5 max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
               {slides[activeSlide].description}
             </p>
-            <Link
-              href={activeSlide === 2 ? "/login" : "/register"}
-              className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/85"
-            >
-              {slides[activeSlide].action}
-              <ArrowRight className="size-4" />
-            </Link>
+            {activeSlide === 2 ? (
+              <Link
+                href="/login"
+                className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/85"
+              >
+                {slides[activeSlide].action}
+                <ArrowRight className="size-4" />
+              </Link>
+            ) : (
+              <ReportIssueLink className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/85">
+                {slides[activeSlide].action}
+                <ArrowRight className="size-4" />
+              </ReportIssueLink>
+            )}
             <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
               <ShieldCheck className="size-4 text-primary" />
               Your report stays connected to you and its progress.

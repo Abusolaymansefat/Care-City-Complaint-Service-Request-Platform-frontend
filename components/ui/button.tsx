@@ -15,15 +15,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        default:
+          "bg-linear-to-r from-primary to-primary/80 text-primary-foreground shadow-sm shadow-primary/20 hover:-translate-y-0.5 hover:from-primary/90 hover:to-primary/70 hover:shadow-md hover:shadow-primary/30",
         outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "border-border bg-linear-to-r from-background to-muted/30 hover:from-muted/60 hover:to-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:from-input/30 dark:to-background dark:hover:from-input/50 dark:hover:to-input/30",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+          "bg-linear-to-r from-secondary to-muted text-secondary-foreground hover:brightness-105 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+          "bg-linear-to-r from-transparent to-muted/20 hover:to-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:to-muted/50",
         destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+          "bg-linear-to-r from-destructive/15 to-destructive/5 text-destructive hover:-translate-y-0.5 hover:from-destructive/25 hover:to-destructive/15 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:from-destructive/20 dark:to-destructive/10 dark:hover:from-destructive/30 dark:hover:to-destructive/20 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

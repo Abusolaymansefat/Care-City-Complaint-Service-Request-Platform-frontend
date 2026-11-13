@@ -23,6 +23,7 @@ export const useNotifications = (query: NotificationQuery, enabled = true) =>
     queryKey: notificationKeys.list(query),
     queryFn: () => fetchMyNotifications(query),
     enabled,
+    refetchInterval: 60_000,
   });
 
 export const useUnreadCount = () =>
