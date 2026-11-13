@@ -1,10 +1,12 @@
-import { ComingSoon } from "@/components/ui/coming-soon";
+import { AssignmentListPage } from "@/components/assignments/assignment-list-page";
 
 export default function OfficerAssignmentsPage() {
   return (
-    <ComingSoon
-      title="Assignments"
-      description="Assignment management is not available in this version yet."
+    <AssignmentListPage
+      title="Department assignments"
+      description="Review assignments for complaints handled by your department."
+      createHref="/officer/assignments/create"
+      detailBase="/officer/assignments"
     />
   );
 }

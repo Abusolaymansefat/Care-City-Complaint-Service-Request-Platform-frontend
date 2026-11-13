@@ -4,7 +4,7 @@ export default function OfficerCategoryReportsPage() {
   return (
     <ComingSoon
       title="Category reports"
-      description="Category reports are not available in this version yet."
+      description="The backend does not currently provide category reporting endpoints."
     />
   );
 }

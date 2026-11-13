@@ -4,7 +4,7 @@ export default function AdminUsersPage() {
   return (
     <ComingSoon
       title="User management"
-      description="User administration is not available in this version yet."
+      description="The backend does not currently provide user listing or administration endpoints."
     />
   );
 }

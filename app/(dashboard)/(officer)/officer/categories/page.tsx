@@ -4,7 +4,7 @@ export default function OfficerCategoriesPage() {
   return (
     <ComingSoon
       title="Department categories"
-      description="Category management is not available in this version yet."
+      description="The category API does not currently authorize department officers."
     />
   );
 }

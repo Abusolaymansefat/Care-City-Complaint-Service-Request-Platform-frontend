@@ -127,12 +127,43 @@ export interface Category {
   department?: { id: string; name: string } | null;
 }
 
+export interface CategoryQuery {
+  searchTerm?: string;
+  departmentId?: string;
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
+  sortBy?: "name" | "slaHours" | "isActive" | "createdAt";
+  sortOrder?: "asc" | "desc";
+}
+
+export interface CategoryInput {
+  name: string;
+  description?: string;
+  slaHours: number;
+  departmentId: string;
+}
+
 export interface Department {
   id: string;
   name: string;
   description?: string | null;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface DepartmentInput {
+  name: string;
+  description?: string;
+}
+
+export interface DepartmentQuery {
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "name" | "isActive" | "createdAt" | "updatedAt";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface ComplaintUpdate {
@@ -195,6 +226,12 @@ export interface Assignment {
   };
   technician?: { id: string; name: string; email: string };
   assignedBy?: { id: string; name: string; email: string };
+}
+
+export interface CreateAssignmentInput {
+  complaintId: string;
+  technicianId: string;
+  notes?: string;
 }
 
 export interface ComplaintQuery {

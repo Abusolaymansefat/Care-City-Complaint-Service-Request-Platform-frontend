@@ -4,7 +4,7 @@ export default function CreateAdminUserPage() {
   return (
     <ComingSoon
       title="Create user"
-      description="User creation is not available in this version yet."
+      description="The backend does not currently provide an admin user-creation endpoint."
     />
   );
 }

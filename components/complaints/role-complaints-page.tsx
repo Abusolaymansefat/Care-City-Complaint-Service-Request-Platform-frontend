@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
+import Link from "next/link";
 import { ClipboardList, Search } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -130,7 +131,11 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
               <Card key={assignment.id}>
                 <CardHeader className="flex flex-row items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <CardTitle className="truncate text-base">{assignment.complaint.title}</CardTitle>
+                    <CardTitle className="truncate text-base">
+                      <Link href={`/technician/assignments/${assignment.id}`} className="hover:underline">
+                        {assignment.complaint.title}
+                      </Link>
+                    </CardTitle>
                     <CardDescription className="mt-1">
                       {assignment.complaint.trackingCode} · Assigned {format(new Date(assignment.assignedAt), "dd MMM yyyy")}
                     </CardDescription>
@@ -159,7 +164,11 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
             <Card key={complaint.id}>
               <CardHeader className="flex flex-row items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <CardTitle className="truncate text-base">{complaint.title}</CardTitle>
+                  <CardTitle className="truncate text-base">
+                    <Link href={`/officer/complaints/${complaint.id}`} className="hover:underline">
+                      {complaint.title}
+                    </Link>
+                  </CardTitle>
                   <CardDescription className="mt-1">
                     {complaint.trackingCode} · {format(new Date(complaint.createdAt), "dd MMM yyyy")}
                   </CardDescription>

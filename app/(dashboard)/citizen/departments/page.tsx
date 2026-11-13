@@ -1,12 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useDepartments } from "@/hooks/useComplaints";
+import { useDepartments } from "@/hooks/useDepartments";
 
 export default function CitizenDepartmentsPage() {
-  const { data, isLoading, isError } = useDepartments({ limit: 100 });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isError } = useDepartments({
+    page,
+    limit: 12,
+    searchTerm: searchTerm.trim() || undefined,
+    sortBy: "name",
+    sortOrder: "asc",
+  });
   const departments = (data?.data ?? []).filter((department) => department.isActive);
 
   return (
@@ -18,9 +29,21 @@ export default function CitizenDepartmentsPage() {
         </p>
       </div>
 
+      <div className="max-w-md">
+        <Input
+          aria-label="Search departments"
+          placeholder="Search departments"
+          value={searchTerm}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            setPage(1);
+          }}
+        />
+      </div>
+
       {isLoading ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} className="h-28 w-full rounded-xl" />
           ))}
         </div>
@@ -34,8 +57,14 @@ export default function CitizenDepartmentsPage() {
       ) : !departments.length ? (
         <Card>
           <CardHeader>
-            <CardTitle>No active departments</CardTitle>
-            <CardDescription>Active city departments will appear here.</CardDescription>
+            <CardTitle>
+              {searchTerm ? "No matching departments" : "No active departments"}
+            </CardTitle>
+            <CardDescription>
+              {searchTerm
+                ? "Try another department name."
+                : "Active city departments will appear here."}
+            </CardDescription>
           </CardHeader>
         </Card>
       ) : (
@@ -54,6 +83,30 @@ export default function CitizenDepartmentsPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {data?.meta && data.meta.totalPages > 1 && (
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Page {data.meta.page} of {data.meta.totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              isDisabled={page <= 1 || isLoading}
+              onPress={() => setPage((current) => current - 1)}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              isDisabled={page >= data.meta.totalPages || isLoading}
+              onPress={() => setPage((current) => current + 1)}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       )}
     </div>

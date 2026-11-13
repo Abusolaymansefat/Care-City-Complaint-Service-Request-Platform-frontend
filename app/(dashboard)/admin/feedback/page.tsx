@@ -4,7 +4,7 @@ export default function AdminFeedbackPage() {
   return (
     <ComingSoon
       title="Feedback"
-      description="Feedback administration is not available in this version yet."
+      description="The backend supports feedback lookup and hiding by ID, but does not provide a feedback list endpoint."
     />
   );
 }

@@ -1,11 +1,13 @@
 import { api } from "@/lib/api";
 import type {
   Category,
+  CategoryInput,
+  CategoryQuery,
   Assignment,
   Complaint,
   ComplaintQuery,
+  CreateAssignmentInput,
   CreateComplaintInput,
-  Department,
   Feedback,
   PaginationMeta,
 } from "@/types";
@@ -53,23 +55,78 @@ export const fetchAssignments = async (params: { page?: number; limit?: number }
   return { data: response.data.data, meta: response.data.meta };
 };
 
+export const fetchAssignment = async (id: string) => {
+  const limit = 100;
+  const firstPage = await fetchAssignments({ page: 1, limit });
+  const firstMatch = firstPage.data.find((assignment) => assignment.id === id);
+  if (firstMatch) return firstMatch;
+
+  for (let page = 2; page <= (firstPage.meta?.totalPages ?? 1); page += 1) {
+    const result = await fetchAssignments({ page, limit });
+    const match = result.data.find((assignment) => assignment.id === id);
+    if (match) return match;
+  }
+
+  throw new Error("Assignment not found.");
+};
+
+export const createAssignment = async (input: CreateAssignmentInput) => {
+  const response = await api.post<{ data: Assignment }>("/assignments/create-assignment", input);
+  return response.data.data;
+};
+
+export const updateAssignmentStatus = async ({
+  id,
+  status,
+  notes,
+}: {
+  id: string;
+  status: Assignment["status"];
+  notes?: string;
+}) => {
+  const response = await api.patch<{ data: Assignment }>(
+    `/assignments/update-assignment-status${id}/status`,
+    { status, notes }
+  );
+  return response.data.data;
+};
+
 export const fetchComplaint = async (id: string) => {
   const response = await api.get<{ data: Complaint }>(`/complaints/get-complaint/${id}`);
   return response.data.data;
 };
 
-export const fetchCategories = async (params: { limit?: number; isActive?: boolean }) => {
+export const fetchCategories = async (params: CategoryQuery) => {
   const response = await api.get<ApiListResponse<Category[]>>("/categories/get-categories", {
     params,
   });
   return { data: response.data.data, meta: response.data.meta };
 };
 
-export const fetchDepartments = async (params: { limit?: number }) => {
-  const response = await api.get<ApiListResponse<Department[]>>("/departments/get-departments", {
-    params,
-  });
-  return { data: response.data.data, meta: response.data.meta };
+export const fetchCategory = async (id: string) => {
+  const response = await api.get<{ data: Category }>(`/categories/get-category/${id}`);
+  return response.data.data;
+};
+
+export const createCategory = async (input: CategoryInput) => {
+  const response = await api.post<{ data: Category }>("/categories/create-category", input);
+  return response.data.data;
+};
+
+export const updateCategory = async ({
+  id,
+  ...input
+}: CategoryInput & { id: string }) => {
+  const response = await api.patch<{ data: Category }>(
+    `/categories/update-category/${id}`,
+    input
+  );
+  return response.data.data;
+};
+
+export const deleteCategory = async (id: string) => {
+  const response = await api.delete<{ data: Category }>(`/categories/delete-category/${id}`);
+  return response.data.data;
 };
 
 export const createFeedback = async (input: {

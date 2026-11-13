@@ -1,10 +1,9 @@
-import { ComingSoon } from "@/components/ui/coming-soon";
+"use client";
+
+import { useParams } from "next/navigation";
+import { AssignmentDetails } from "@/components/assignments/assignment-details";
 
 export default function TechnicianAssignmentDetailPage() {
-  return (
-    <ComingSoon
-      title="Assignment details"
-      description="Assignment details are not available in this version yet."
-    />
-  );
+  const { id } = useParams<{ id: string }>();
+  return <AssignmentDetails id={id} role="technician" />;
 }

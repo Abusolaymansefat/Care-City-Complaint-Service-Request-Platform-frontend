@@ -51,6 +51,7 @@ const technicianGroups: NavGroup[] = [
     items: [
       { title: "Dashboard", href: "/technician/dashboard", icon: LayoutDashboard },
       { title: "My Assignments", href: "/technician/assignments", icon: ListChecks },
+      { title: "Work History", href: "/technician/work-history", icon: ClipboardList },
     ],
   },
   account,
@@ -62,6 +63,7 @@ const departmentOfficerGroups: NavGroup[] = [
     items: [
       { title: "Dashboard", href: "/officer/dashboard", icon: LayoutDashboard },
       { title: "Department Complaints", href: "/officer/complaints", icon: ListChecks },
+      { title: "Assignments", href: "/officer/assignments", icon: ClipboardList },
     ],
   },
   account,
@@ -93,6 +95,10 @@ export const navByRole: Record<Role, NavGroup[]> = {
       items: [
         { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { title: "All Complaints", href: "/admin/complaints", icon: ClipboardList },
+        { title: "Departments", href: "/admin/departments", icon: Building2 },
+        { title: "Categories", href: "/admin/categories", icon: Tags },
+        { title: "Assignments", href: "/admin/assignments", icon: ListChecks },
+        { title: "Payments", href: "/admin/payments", icon: CreditCard },
         { title: "Users", href: "/admin/users", icon: Users },
       ],
     },

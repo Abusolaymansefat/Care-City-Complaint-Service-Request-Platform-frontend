@@ -6,19 +6,27 @@ import { getApiError } from "@/lib/auth";
 import {
   createFeedback,
   createComplaint,
+  createAssignment,
+  createCategory,
+  deleteCategory,
   fetchCategories,
+  fetchCategory,
+  fetchAssignment,
   fetchAssignments,
   fetchComplaint,
   fetchComplaints,
-  fetchDepartments,
   fetchMyComplaints,
+  updateAssignmentStatus,
+  updateCategory,
 } from "@/lib/complaints";
 import type {
   Category,
+  CategoryInput,
   Complaint,
   ComplaintQuery,
+  CreateAssignmentInput,
   CreateComplaintInput,
-  Department,
+  CategoryQuery,
   PaginationMeta,
 } from "@/types";
 
@@ -43,6 +51,43 @@ export const useAssignments = (query: { page?: number; limit?: number } = {}, en
     enabled,
   });
 
+export const useAssignment = (id?: string) =>
+  useQuery({
+    queryKey: ["assignment", id],
+    queryFn: () => fetchAssignment(id as string),
+    enabled: Boolean(id),
+  });
+
+export const useCreateAssignment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateAssignmentInput) => createAssignment(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["assignments"] });
+      void queryClient.invalidateQueries({ queryKey: ["assignment"] });
+      void queryClient.invalidateQueries({ queryKey: ["complaints"] });
+      toast.success("Assignment created.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
+
+export const useUpdateAssignmentStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateAssignmentStatus,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["assignments"] });
+      void queryClient.invalidateQueries({ queryKey: ["assignment"] });
+      void queryClient.invalidateQueries({ queryKey: ["complaints"] });
+      toast.success("Assignment status updated.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
+
 export const useComplaint = (id?: string) =>
   useQuery<Complaint>({
     queryKey: ["complaints", id],
@@ -50,17 +95,58 @@ export const useComplaint = (id?: string) =>
     enabled: Boolean(id),
   });
 
-export const useCategories = (query: { limit?: number; isActive?: boolean } = {}) =>
+export const useCategories = (query: CategoryQuery = {}) =>
   useQuery<{ data: Category[]; meta?: PaginationMeta }>({
     queryKey: ["categories", query],
     queryFn: () => fetchCategories(query),
   });
 
-export const useDepartments = (query: { limit?: number } = {}) =>
-  useQuery<{ data: Department[]; meta?: PaginationMeta }>({
-    queryKey: ["departments", query],
-    queryFn: () => fetchDepartments(query),
+export const useCategory = (id?: string) =>
+  useQuery<Category>({
+    queryKey: ["category", id],
+    queryFn: () => fetchCategory(id as string),
+    enabled: Boolean(id),
   });
+
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CategoryInput) => createCategory(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Category created.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
+
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateCategory,
+    onSuccess: (category) => {
+      void queryClient.invalidateQueries({ queryKey: ["categories"] });
+      void queryClient.invalidateQueries({ queryKey: ["category", category.id] });
+      toast.success("Category updated.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Category deactivated.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
 
 export const useCreateComplaint = () => {
   const queryClient = useQueryClient();

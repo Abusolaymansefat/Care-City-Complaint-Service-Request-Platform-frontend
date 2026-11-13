@@ -4,7 +4,7 @@ export default function OfficerTechniciansPage() {
   return (
     <ComingSoon
       title="Technicians"
-      description="Technician management is not available in this version yet."
+      description="The backend does not currently provide a department technician-list or management endpoint."
     />
   );
 }
