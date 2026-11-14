@@ -23,6 +23,7 @@ export default function Navbar() {
 
   const links = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
     ...(user?.role === "CITIZEN"
       ? [
           { href: "/citizen/complaints", label: "My Complaints" },

@@ -70,6 +70,11 @@ export default function Footer() {
               <h3 className="text-sm font-semibold">About</h3>
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                 <li>
+                  <Link href="/about" className="transition-colors hover:text-foreground">
+                    About us
+                  </Link>
+                </li>
+                <li>
                   <Link href="/" className="transition-colors hover:text-foreground">
                     How it works
                   </Link>

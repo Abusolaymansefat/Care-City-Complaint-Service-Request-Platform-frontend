@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
-import { ClipboardList, Search, Trash2 } from "lucide-react";
+import { Archive, ClipboardList, Search } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,7 +63,7 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
       : "Department complaints";
 
   const handleDelete = (id: string, complaintTitle: string) => {
-    if (window.confirm(`Delete "${complaintTitle}"? Complaints with payment or status history cannot be deleted.`)) {
+    if (window.confirm(`Archive "${complaintTitle}"? It will be hidden from complaint lists, but its payment and status history will be preserved.`)) {
       deleteComplaint.mutate(id);
     }
   };
@@ -197,8 +197,8 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
                     isDisabled={deleteComplaint.isPending}
                     onPress={() => handleDelete(complaint.id, complaint.title)}
                   >
-                    <Trash2 aria-hidden="true" />
-                    Delete
+                    <Archive aria-hidden="true" />
+                    Archive
                   </Button>
                 </CardContent>
               )}

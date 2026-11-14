@@ -82,7 +82,7 @@ export const navByRole: Record<Role, NavGroup[]> = {
         { title: "Submit Complaint", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
         { title: "Complaint Tracking", href: "/citizen/tracking", icon: Search },
         { title: "AI Issue Guide", href: "/citizen/ai", icon: Bot },
-        { title: "Payments", href: "/payments", icon: CreditCard },
+        { title: "Payments", href: "/citizen/payments", icon: CreditCard },
       ],
     },
     account,

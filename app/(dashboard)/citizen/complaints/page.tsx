@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { useState } from "react";
-import { ClipboardList, MapPin, Plus, Search } from "lucide-react";
+import { ClipboardList, MapPin, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { Button, LinkButton } from "@/components/ui/button";
 import {
@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMyComplaints } from "@/hooks/useComplaints";
+import { useDeleteComplaint, useMyComplaints } from "@/hooks/useComplaints";
 
 export default function CitizenComplaintsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const deleteComplaint = useDeleteComplaint();
   const { data, isLoading, isError } = useMyComplaints({
     page,
     limit: 10,
@@ -125,12 +126,43 @@ export default function CitizenComplaintsPage() {
                     <span>{complaint.videoUrls.length} attached video{complaint.videoUrls.length === 1 ? "" : "s"}</span>
                   )}
                 </div>
-                <Link
-                  href={`/citizen/tracking/${encodeURIComponent(complaint.trackingCode)}`}
-                  className="font-medium text-primary hover:underline"
-                >
-                  Track status
-                </Link>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    href={`/citizen/tracking/${encodeURIComponent(complaint.trackingCode)}`}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    Track status
+                  </Link>
+                  {complaint.status === "SUBMITTED" && (
+                    <>
+                      <LinkButton
+                        href={`/citizen/complaints/${complaint.id}/edit`}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Pencil aria-hidden="true" />
+                        Edit
+                      </LinkButton>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        isDisabled={deleteComplaint.isPending}
+                        onPress={() => {
+                          if (
+                            window.confirm(
+                              "Remove this complaint from your list? Its history and attachments will be preserved."
+                            )
+                          ) {
+                            deleteComplaint.mutate(complaint.id);
+                          }
+                        }}
+                      >
+                        <Trash2 aria-hidden="true" />
+                        Delete
+                      </Button>
+                    </>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}

@@ -202,7 +202,7 @@ export const useDeleteComplaint = () => {
     mutationFn: deleteComplaint,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["complaints"] });
-      toast.success("Complaint deleted.");
+      toast.success("Complaint archived.");
     },
     onError: (error) => toast.error(getApiError(error)),
   });

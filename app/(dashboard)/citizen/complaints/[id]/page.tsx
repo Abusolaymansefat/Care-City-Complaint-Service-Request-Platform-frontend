@@ -21,7 +21,9 @@ export default function ComplaintDetailsPage() {
   const handleDelete = () => {
     if (
       complaint &&
-      window.confirm(`Delete "${complaint.title}"? This cannot be undone.`)
+      window.confirm(
+        `Remove "${complaint.title}" from your list? Its history and attachments will be preserved.`
+      )
     ) {
       deleteComplaint.mutate(complaint.id, {
         onSuccess: () => router.push("/citizen/complaints"),
