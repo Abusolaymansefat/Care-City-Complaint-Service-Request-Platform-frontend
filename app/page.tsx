@@ -9,6 +9,7 @@ import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import HomeBanner from "@/components/layout/home-banner";
 import ReportIssueLink from "@/components/layout/report-issue-link";
+import PublicComplaintsGrid from "@/components/complaints/public-complaints-grid";
 
 const steps = [
   {
@@ -37,6 +38,7 @@ export default function Home() {
       <Navbar />
       <main>
         <HomeBanner />
+        <PublicComplaintsGrid />
 
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">

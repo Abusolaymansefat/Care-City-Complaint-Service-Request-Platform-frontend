@@ -1,20 +1,33 @@
 "use client";
 
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { MapPin } from "lucide-react";
+import { MapPin, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ComplaintStatusBadge, PriorityBadge } from "@/components/citizen/complaints/complaint-status-badge";
-import { useComplaint } from "@/hooks/useComplaints";
+import { useComplaint, useDeleteComplaint } from "@/hooks/useComplaints";
 import { PaymentStatusBadge } from "@/components/payments/payment-status-badge";
 
 export default function ComplaintDetailsPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const { data: complaint, isLoading, isError } = useComplaint(params.id);
+  const deleteComplaint = useDeleteComplaint();
+
+  const handleDelete = () => {
+    if (
+      complaint &&
+      window.confirm(`Delete "${complaint.title}"? This cannot be undone.`)
+    ) {
+      deleteComplaint.mutate(complaint.id, {
+        onSuccess: () => router.push("/citizen/complaints"),
+      });
+    }
+  };
 
   if (isLoading) {
     return <Skeleton className="h-64 w-full" />;
@@ -52,10 +65,28 @@ export default function ComplaintDetailsPage() {
             <span>Submitted {format(new Date(complaint.createdAt), "dd MMM yyyy, hh:mm a")}</span>
           </div>
           <div className="flex flex-wrap gap-2">
+            {complaint.status === "SUBMITTED" && (
+              <>
+                <Link href={`/citizen/complaints/${complaint.id}/edit`}>
+                  <Button variant="outline">
+                    <Pencil aria-hidden="true" />
+                    Edit complaint
+                  </Button>
+                </Link>
+                <Button
+                  variant="destructive"
+                  isDisabled={deleteComplaint.isPending}
+                  onPress={handleDelete}
+                >
+                  <Trash2 aria-hidden="true" />
+                  Delete complaint
+                </Button>
+              </>
+            )}
             {complaint.paymentRequired && (
               <Button
                 onPress={() => {
-                  router.push(`/payments/new?complaintId=${complaint.id}`);
+                  router.push(`/citizen/payments/new?complaintId=${complaint.id}`);
                 }}
               >
                 Pay 10 BDT with bKash

@@ -50,6 +50,7 @@ export default function CreatePosterPage() {
       address: "",
       categoryId: "",
       images: [],
+      videos: [],
     },
   });
   const description = useWatch({ control, name: "description" }) ?? "";

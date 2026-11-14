@@ -34,7 +34,7 @@ const shortcuts = [
   { label: "Report an issue", description: "Submit a new city complaint", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
   { label: "Service requests", description: "Browse available city services", href: "/citizen/service-requests", icon: Wrench },
   { label: "My complaints", description: "Track submitted requests", href: "/citizen/complaints", icon: ClipboardList },
-  { label: "Payments", description: "Review your transactions", href: "/payments", icon: CreditCard },
+  { label: "Payments", description: "Review your transactions", href: "/citizen/payments", icon: CreditCard },
 ];
 
 export default function DashboardContent() {
@@ -253,7 +253,7 @@ export default function DashboardContent() {
             <CardTitle>Recent payments</CardTitle>
             <CardDescription>Complaint fees and transaction status.</CardDescription>
           </div>
-          <Link href="/payments" className="shrink-0 text-sm font-medium text-blue-700 hover:underline dark:text-blue-300">
+          <Link href="/citizen/payments" className="shrink-0 text-sm font-medium text-blue-700 hover:underline dark:text-blue-300">
             Payment history
           </Link>
         </CardHeader>
@@ -273,7 +273,7 @@ export default function DashboardContent() {
               {payments.data.data.map((payment) => (
                 <li key={payment.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                   <div className="min-w-0">
-                    <Link href={`/payments/${payment.id}`} className="block truncate text-sm font-medium hover:text-blue-700 hover:underline">
+                    <Link href={`/citizen/payments/${payment.id}`} className="block truncate text-sm font-medium hover:text-blue-700 hover:underline">
                       {payment.complaint?.title ?? payment.invoiceNumber}
                     </Link>
                     <p className="mt-1 text-xs text-muted-foreground">

@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
-import { ClipboardList, Search } from "lucide-react";
+import { ClipboardList, Search, Trash2 } from "lucide-react";
 import { ComplaintStatusBadge } from "@/components/citizen/complaints/complaint-status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAssignments, useComplaints } from "@/hooks/useComplaints";
+import { useAssignments, useComplaints, useDeleteComplaint } from "@/hooks/useComplaints";
 import { useAuthStore } from "@/store/auth.store";
 import type { ComplaintStatus } from "@/types";
 
@@ -32,6 +32,7 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<ComplaintStatus | "">("");
   const [page, setPage] = useState(1);
+  const deleteComplaint = useDeleteComplaint();
   const complaintQuery = useComplaints({
     page,
     limit: 10,
@@ -60,6 +61,12 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
     : technician
       ? "My assignments"
       : "Department complaints";
+
+  const handleDelete = (id: string, complaintTitle: string) => {
+    if (window.confirm(`Delete "${complaintTitle}"? Complaints with payment or status history cannot be deleted.`)) {
+      deleteComplaint.mutate(id);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -165,7 +172,10 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
               <CardHeader className="flex flex-row items-start justify-between gap-3">
                 <div className="min-w-0">
                   <CardTitle className="truncate text-base">
-                    <Link href={`/officer/complaints/${complaint.id}`} className="hover:underline">
+                    <Link
+                      href={admin ? `/complaint/${complaint.id}` : `/officer/complaints/${complaint.id}`}
+                      className="hover:underline"
+                    >
                       {complaint.title}
                     </Link>
                   </CardTitle>
@@ -180,6 +190,18 @@ export default function RoleComplaintsPage({ admin = false }: { admin?: boolean 
                 <span>{complaint.category?.name ?? "No category"}</span>
                 <span>{complaint.address}</span>
               </CardContent>
+              {admin && (
+                <CardContent className="flex justify-end pt-0">
+                  <Button
+                    variant="destructive"
+                    isDisabled={deleteComplaint.isPending}
+                    onPress={() => handleDelete(complaint.id, complaint.title)}
+                  >
+                    <Trash2 aria-hidden="true" />
+                    Delete
+                  </Button>
+                </CardContent>
+              )}
             </Card>
           ))}
         </div>

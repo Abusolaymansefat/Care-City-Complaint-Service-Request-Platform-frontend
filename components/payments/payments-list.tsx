@@ -19,6 +19,7 @@ export function PaymentsList({
   onPageChange,
   emptyMessage,
   showPayer,
+  detailBasePath,
 }: {
   payments?: Payment[];
   meta?: PaginationMeta;
@@ -27,6 +28,7 @@ export function PaymentsList({
   onPageChange: (page: number) => void;
   emptyMessage: string;
   showPayer?: boolean;
+  detailBasePath: string;
 }) {
   if (isLoading) {
     return (
@@ -62,8 +64,13 @@ export function PaymentsList({
                     ? `${payment.complaint.trackingCode} · `
                     : ""}
                   {payment.invoiceNumber}
-                  {showPayer && payment.user ? ` · ${payment.user.name}` : ""}
                 </CardDescription>
+                {showPayer && (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {payment.user?.name ?? payment.userId}
+                    {payment.user?.email ? ` · ${payment.user.email}` : ""}
+                  </p>
+                )}
               </div>
               <PaymentStatusBadge status={payment.status} />
             </CardHeader>
@@ -83,7 +90,7 @@ export function PaymentsList({
                     </a>
                   )}
                 <Link
-                  href={`/payments/${payment.id}`}
+                  href={`${detailBasePath}/${payment.id}`}
                   className="text-sm text-primary hover:underline"
                 >
                   View details

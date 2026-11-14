@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Building2 } from "lucide-react";
+import { useMounted } from "@/hooks/useMounted";
 
 export default function Footer() {
-  const year = new Date().getFullYear();
+  const mounted = useMounted();
+  const year = mounted ? new Date().getFullYear() : null;
 
   return (
     <footer className="border-t bg-muted/30">
@@ -81,7 +85,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t pt-6 text-sm text-muted-foreground">
-          © {year} CityCare. All rights reserved.
+          © {year ?? ""} CityCare. All rights reserved.
         </div>
       </div>
     </footer>

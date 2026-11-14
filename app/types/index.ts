@@ -234,6 +234,27 @@ export interface Complaint {
   payments?: Payment[];
 }
 
+export interface PublicComplaint {
+  id: string;
+  trackingCode: string;
+  title: string;
+  description: string;
+  address: string;
+  imageUrls: string[];
+  priority: Priority;
+  status: ComplaintStatus;
+  createdAt: string;
+  category?: { id: string; name: string } | null;
+}
+
+export interface UpdateComplaintInput {
+  id: string;
+  title: string;
+  description: string;
+  address: string;
+  categoryId?: string;
+}
+
 export type AssignmentStatus =
   | "ASSIGNED"
   | "IN_PROGRESS"

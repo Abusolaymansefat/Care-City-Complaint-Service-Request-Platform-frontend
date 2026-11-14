@@ -8,6 +8,7 @@ import {
   createComplaint,
   createAssignment,
   createCategory,
+  deleteComplaint,
   deleteCategory,
   fetchCategories,
   fetchCategory,
@@ -16,7 +17,10 @@ import {
   fetchComplaint,
   fetchComplaints,
   fetchMyComplaints,
+  fetchPublicComplaint,
+  fetchPublicComplaints,
   updateAssignmentStatus,
+  updateComplaint,
   updateCategory,
 } from "@/lib/complaints";
 import type {
@@ -26,8 +30,10 @@ import type {
   ComplaintQuery,
   CreateAssignmentInput,
   CreateComplaintInput,
+  PublicComplaint,
   CategoryQuery,
   PaginationMeta,
+  UpdateComplaintInput,
 } from "@/types";
 
 export const useMyComplaints = (query: ComplaintQuery = {}, enabled = true) =>
@@ -42,6 +48,21 @@ export const useComplaints = (query: ComplaintQuery = {}, enabled = true) =>
     queryKey: ["complaints", "all", query],
     queryFn: () => fetchComplaints(query),
     enabled,
+  });
+
+export const usePublicComplaints = (
+  query: Pick<ComplaintQuery, "page" | "limit"> = {}
+) =>
+  useQuery({
+    queryKey: ["complaints", "public", query],
+    queryFn: () => fetchPublicComplaints(query),
+  });
+
+export const usePublicComplaint = (id?: string) =>
+  useQuery<PublicComplaint>({
+    queryKey: ["complaints", "public", id],
+    queryFn: () => fetchPublicComplaint(id as string),
+    enabled: Boolean(id),
   });
 
 export const useAssignments = (query: { page?: number; limit?: number } = {}, enabled = true) =>
@@ -156,6 +177,32 @@ export const useCreateComplaint = () => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["complaints", "mine"] });
       toast.success("Your complaint has been submitted.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
+
+export const useUpdateComplaint = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdateComplaintInput) => updateComplaint(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["complaints"] });
+      toast.success("Your complaint has been updated.");
+    },
+    onError: (error) => toast.error(getApiError(error)),
+  });
+};
+
+export const useDeleteComplaint = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteComplaint,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["complaints"] });
+      toast.success("Complaint deleted.");
     },
     onError: (error) => toast.error(getApiError(error)),
   });

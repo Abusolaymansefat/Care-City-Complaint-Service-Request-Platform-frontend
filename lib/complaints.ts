@@ -8,6 +8,8 @@ import type {
   ComplaintQuery,
   CreateAssignmentInput,
   CreateComplaintInput,
+  PublicComplaint,
+  UpdateComplaintInput,
   Feedback,
   PaginationMeta,
 } from "@/types";
@@ -29,6 +31,23 @@ export const createComplaint = async (input: CreateComplaintInput) => {
   input.videos?.forEach((video) => body.append("media", video));
 
   const response = await api.post<{ data: Complaint }>("/complaints/create-complaint", body);
+  return response.data.data;
+};
+
+export const fetchPublicComplaints = async (
+  params: Pick<ComplaintQuery, "page" | "limit">
+) => {
+  const response = await api.get<ApiListResponse<PublicComplaint[]>>(
+    "/complaints/get-public-complaints",
+    { params }
+  );
+  return { data: response.data.data, meta: response.data.meta };
+};
+
+export const fetchPublicComplaint = async (id: string) => {
+  const response = await api.get<{ data: PublicComplaint }>(
+    `/complaints/get-public-complaint/${id}`
+  );
   return response.data.data;
 };
 
@@ -93,6 +112,21 @@ export const updateAssignmentStatus = async ({
 
 export const fetchComplaint = async (id: string) => {
   const response = await api.get<{ data: Complaint }>(`/complaints/get-complaint/${id}`);
+  return response.data.data;
+};
+
+export const updateComplaint = async ({ id, ...input }: UpdateComplaintInput) => {
+  const response = await api.patch<{ data: Complaint }>(
+    `/complaints/update-complaint/${id}`,
+    input
+  );
+  return response.data.data;
+};
+
+export const deleteComplaint = async (id: string) => {
+  const response = await api.delete<{ data: { id: string } }>(
+    `/complaints/delete-complaint/${id}`
+  );
   return response.data.data;
 };
 

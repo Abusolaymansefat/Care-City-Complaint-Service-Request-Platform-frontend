@@ -66,6 +66,7 @@ export default function HistoryPage() {
             onPageChange={setPage}
             emptyMessage="Payment transactions will appear here."
             showPayer={Boolean(isAdmin)}
+            detailBasePath={isAdmin ? "/admin/payments" : "/citizen/payments"}
           />
         )}
       </div>

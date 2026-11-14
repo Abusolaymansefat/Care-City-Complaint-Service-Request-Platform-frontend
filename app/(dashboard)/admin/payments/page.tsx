@@ -93,6 +93,7 @@ export default function AdminPaymentsPage() {
           onPageChange={setPage}
           emptyMessage="Payment transactions will appear here when citizens pay for complaints."
           showPayer
+          detailBasePath="/admin/payments"
         />
       )}
     </div>
