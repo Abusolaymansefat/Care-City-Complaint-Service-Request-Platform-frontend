@@ -10,6 +10,11 @@ import Footer from "@/components/layout/footer";
 import HomeBanner from "@/components/layout/home-banner";
 import ReportIssueLink from "@/components/layout/report-issue-link";
 import PublicComplaintsGrid from "@/components/complaints/public-complaints-grid";
+import HeroSection from "@/components/home/hero-section";
+import StatisticsSection from "@/components/home/statistics-section";
+import ServiceCategories from "@/components/home/service-categories";
+import HowItWorks from "@/components/home/how-it-works";
+import GoogleMapSection from "@/components/home/google-map-section";
 
 const steps = [
   {
@@ -39,6 +44,14 @@ export default function Home() {
       <main>
         <HomeBanner />
         <PublicComplaintsGrid />
+
+        <HeroSection />
+        <StatisticsSection />
+        <ServiceCategories />
+        <HowItWorks />
+
+        {/* Google Map */}
+        <GoogleMapSection />
 
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">

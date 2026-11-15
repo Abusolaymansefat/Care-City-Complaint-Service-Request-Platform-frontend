@@ -104,7 +104,7 @@ export const updateAssignmentStatus = async ({
   notes?: string;
 }) => {
   const response = await api.patch<{ data: Assignment }>(
-    `/assignments/update-assignment-status${id}/status`,
+    `/assignments/update-assignment-status/${id}/status`,
     { status, notes }
   );
   return response.data.data;

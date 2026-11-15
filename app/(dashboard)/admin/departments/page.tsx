@@ -30,7 +30,11 @@ export default function AdminDepartmentsPage() {
 
   const handleDelete = (id: string, name: string) => {
     if (window.confirm(`Delete "${name}"? This cannot be undone.`)) {
-      deleteDepartment.mutate(id);
+      deleteDepartment.mutate(id, {
+        onSuccess: () => {
+          if (data?.data.length === 1 && page > 1) setPage((current) => current - 1);
+        },
+      });
     }
   };
 
