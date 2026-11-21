@@ -56,11 +56,46 @@ const technicianGroups: NavGroup[] = [
   {
     label: "Work",
     items: [
-      { title: "Dashboard", href: "/technician/dashboard", icon: LayoutDashboard },
-      { title: "My Assignments", href: "/technician/assignments", icon: ListChecks },
-      { title: "My Complaints", href: "/technician/complaints", icon: ClipboardList },
-      { title: "Payment History", href: "/technician/payment-history", icon: CreditCard },
-      { title: "Work History", href: "/technician/work-history", icon: UserCircle },
+      {
+        title: "Dashboard",
+        href: "/technician/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "My Assignments",
+        href: "/technician/assignments",
+        icon: ListChecks,
+      },
+      {
+        title: "Work Updates",
+        href: "/technician/work-updates",
+        icon: Bell,
+      },
+      {
+        title: "My Complaints",
+        href: "/technician/complaints",
+        icon: ClipboardList,
+      },
+      {
+        title: "Map & Location",
+        href: "/technician/map",
+        icon: Search,
+      },
+      {
+        title: "Completed Tasks",
+        href: "/technician/completed",
+        icon: FilePlus2,
+      },
+      {
+        title: "Payment History",
+        href: "/technician/payment-history",
+        icon: CreditCard,
+      },
+      {
+        title: "Work History",
+        href: "/technician/work-history",
+        icon: UserCircle,
+      },
     ],
   },
   account,

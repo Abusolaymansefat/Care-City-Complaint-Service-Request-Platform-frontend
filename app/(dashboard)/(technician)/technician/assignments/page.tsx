@@ -1,5 +1,12 @@
-import RoleComplaintsPage from "@/components/complaints/role-complaints-page";
+
+import { AssignmentListPage } from "@/components/assignments/assignment-list-page";
 
 export default function TechnicianAssignmentsPage() {
-  return <RoleComplaintsPage />;
+  return (
+    <AssignmentListPage
+      title="My Assignments"
+      description="View and manage complaints assigned to you."
+      detailBase="/technician/assignments"
+    />
+  );
 }

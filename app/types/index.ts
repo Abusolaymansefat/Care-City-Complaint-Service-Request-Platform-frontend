@@ -262,6 +262,19 @@ export type AssignmentStatus =
   | "CANCELLED"
   | "REJECTED";
 
+export type AssignmentComplaint = Pick<
+  Complaint,
+  | "id"
+  | "trackingCode"
+  | "title"
+  | "status"
+  | "address"
+  | "latitude"
+  | "longitude"
+  | "priority"
+  | "slaDueAt"
+>;
+
 export interface Assignment {
   id: string;
   complaintId: string;
@@ -272,12 +285,7 @@ export interface Assignment {
   assignedAt: string;
   acceptedAt?: string | null;
   completedAt?: string | null;
-  complaint: {
-    id: string;
-    trackingCode: string;
-    title: string;
-    status: ComplaintStatus;
-  };
+  complaint: AssignmentComplaint;
   technician?: { id: string; name: string; email: string };
   assignedBy?: { id: string; name: string; email: string };
 }

@@ -43,7 +43,12 @@ export function AssignmentDetails({
   }
 
   const statuses = role === "officer" ? [] : nextStatuses[assignment.status] ?? [];
-  const returnTo = role === "admin" ? "/admin/assignments" : "/officer/assignments";
+  const returnTo =
+    role === "admin"
+      ? "/admin/assignments"
+      : role === "officer"
+        ? "/officer/assignments"
+        : "/technician/assignments";
 
   return (
     <div className="max-w-2xl space-y-4">
