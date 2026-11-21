@@ -1,7 +1,15 @@
 import { isAxiosError } from "axios";
 import type { Role, User } from "@/types";
 
-export const getDashboardPath = (role: Role) => (role === "ADMIN" ? "/admin" : "/dashboard");
+const dashboardPaths: Record<Role, string> = {
+  ADMIN: "/admin",
+  CITIZEN: "/citizen/dashboard",
+  TECHNICIAN: "/technician/dashboard",
+  DEPARTMENT_OFFICER: "/officer/dashboard",
+  OFFICER: "/citizen/dashboard",
+};
+
+export const getDashboardPath = (role: Role) => dashboardPaths[role];
 
 export const getInitials = (name: string) =>
   name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();

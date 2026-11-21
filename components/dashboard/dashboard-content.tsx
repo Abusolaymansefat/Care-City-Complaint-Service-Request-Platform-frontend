@@ -72,7 +72,11 @@ export default function DashboardContent() {
   }
 
   if (user?.role === "TECHNICIAN" || user?.role === "DEPARTMENT_OFFICER") {
-    return <OperationsDashboard />;
+    return (
+      <OperationsDashboard
+        mode={user.role === "TECHNICIAN" ? "technician" : "officer"}
+      />
+    );
   }
 
   if (!isCitizen) {
