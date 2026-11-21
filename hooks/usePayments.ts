@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { getApiError } from "@/lib/auth";
 import {
   fetchMyPayments,
+  fetchDepartmentPayments,
   fetchPaymentStats,
   fetchPaymentById,
   fetchPayments,
@@ -23,6 +24,13 @@ export const useAdminPayments = (query: PaymentQuery, enabled = true) =>
   useQuery({
     queryKey: ["payments", "admin", query],
     queryFn: () => fetchPayments(query),
+    enabled,
+  });
+
+export const useDepartmentPayments = (query: PaymentQuery, enabled = true) =>
+  useQuery({
+    queryKey: ["payments", "department", query],
+    queryFn: () => fetchDepartmentPayments(query),
     enabled,
   });
 

@@ -1,17 +1,28 @@
+
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button, LinkButton } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useAssignment, useUpdateAssignmentStatus } from "@/hooks/useComplaints";
+import {
+  useAssignment,
+  useUpdateAssignmentStatus,
+} from "@/hooks/useComplaints";
 import type { AssignmentStatus } from "@/types";
-import { useState } from "react";
 
-const nextStatuses: Partial<Record<AssignmentStatus, AssignmentStatus[]>> = {
+const nextStatuses: Partial<
+  Record<AssignmentStatus, AssignmentStatus[]>
+> = {
   ASSIGNED: ["IN_PROGRESS", "REJECTED"],
   IN_PROGRESS: ["COMPLETED", "REJECTED"],
 };
@@ -27,7 +38,9 @@ export function AssignmentDetails({
   const updateStatus = useUpdateAssignmentStatus();
   const [notes, setNotes] = useState("");
 
-  if (isLoading) return <Skeleton className="h-72 w-full max-w-2xl rounded-xl" />;
+  if (isLoading) {
+    return <Skeleton className="h-72 w-full max-w-2xl rounded-xl" />;
+  }
 
   if (isError || !assignment) {
     return (
@@ -35,14 +48,20 @@ export function AssignmentDetails({
         <CardHeader>
           <CardTitle>Assignment not found</CardTitle>
           <CardDescription>
-            This assignment is unavailable or your account cannot access it.
+            This assignment is unavailable or you do not have permission.
           </CardDescription>
         </CardHeader>
       </Card>
     );
   }
 
-  const statuses = role === "officer" ? [] : nextStatuses[assignment.status] ?? [];
+  // Department Officer can view, but cannot update status
+  // according to the current backend service permission.
+  const statuses =
+    role === "officer"
+      ? []
+      : nextStatuses[assignment.status] ?? [];
+
   const returnTo =
     role === "admin"
       ? "/admin/assignments"
@@ -50,25 +69,76 @@ export function AssignmentDetails({
         ? "/officer/assignments"
         : "/technician/assignments";
 
+  const handleStatusUpdate = (status: AssignmentStatus) => {
+    updateStatus.mutate({
+      id,
+      status,
+      notes: notes.trim() || undefined,
+    });
+  };
+
   return (
-    <div className="max-w-2xl space-y-4">
+    <div className="mx-auto max-w-3xl space-y-5">
       <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-3">
+        <CardHeader className="flex flex-col justify-between gap-3 sm:flex-row">
           <div>
             <CardTitle>{assignment.complaint.title}</CardTitle>
             <CardDescription>
-              {assignment.complaint.trackingCode} · Assigned {format(new Date(assignment.assignedAt), "dd MMM yyyy, hh:mm a")}
+              {assignment.complaint.trackingCode}
             </CardDescription>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Assigned{" "}
+              {format(
+                new Date(assignment.assignedAt),
+                "dd MMM yyyy, hh:mm a"
+              )}
+            </p>
           </div>
-          <Badge variant={assignment.status === "COMPLETED" ? "default" : "secondary"}>
+
+          <Badge variant="secondary">
             {assignment.status.replaceAll("_", " ")}
           </Badge>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <p>Complaint status: {assignment.complaint.status.replaceAll("_", " ")}</p>
-          <p>Technician: {assignment.technician?.name ?? "Unavailable"}{assignment.technician?.email ? ` · ${assignment.technician.email}` : ""}</p>
-          <p>Assigned by: {assignment.assignedBy?.name ?? "Unavailable"}</p>
-          {assignment.notes && <p className="text-muted-foreground">Notes: {assignment.notes}</p>}
+
+        <CardContent className="space-y-3 text-sm">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <p className="text-muted-foreground">Complaint status</p>
+              <p className="font-medium">
+                {assignment.complaint.status.replaceAll("_", " ")}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground">Technician</p>
+              <p className="font-medium">
+                {assignment.technician?.name ?? "Unavailable"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground">Assigned by</p>
+              <p className="font-medium">
+                {assignment.assignedBy?.name ?? "Unavailable"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground">Technician email</p>
+              <p className="font-medium">
+                {assignment.technician?.email ?? "Unavailable"}
+              </p>
+            </div>
+          </div>
+
+          {assignment.notes && (
+            <div className="rounded-lg bg-muted p-3">
+              <p className="font-medium">Assignment notes</p>
+              <p className="mt-1 text-muted-foreground">
+                {assignment.notes}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -77,36 +147,33 @@ export function AssignmentDetails({
           <CardHeader>
             <CardTitle>Update assignment</CardTitle>
             <CardDescription>
-              Status changes also update the related complaint and notify the citizen.
+              Update the technician assignment progress.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+
+          <CardContent className="space-y-4">
             <Textarea
-              aria-label="Status update notes"
+              placeholder="Write update notes..."
               maxLength={1000}
-              placeholder="Optional update notes"
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
             />
+
             <div className="flex flex-wrap gap-2">
               {statuses.map((status) => (
                 <Button
                   key={status}
-                  variant={status === "REJECTED" ? "destructive" : "default"}
                   isDisabled={updateStatus.isPending}
-                  onPress={() =>
-                    updateStatus.mutate({
-                      id,
-                      status,
-                      notes: notes.trim() || undefined,
-                    })
+                  variant={
+                    status === "REJECTED" ? "destructive" : "default"
                   }
+                  onPress={() => handleStatusUpdate(status)}
                 >
                   {status === "IN_PROGRESS"
-                    ? "Start work"
+                    ? "Start Work"
                     : status === "COMPLETED"
-                      ? "Mark complete"
-                      : "Reject assignment"}
+                      ? "Mark Completed"
+                      : "Reject Assignment"}
                 </Button>
               ))}
             </div>
@@ -114,9 +181,9 @@ export function AssignmentDetails({
         </Card>
       )}
 
-      <Link href={returnTo} className="text-sm font-medium text-primary hover:underline">
-        Back to assignments
-      </Link>
+      <LinkButton href={returnTo} variant="outline">
+        Back to Assignments
+      </LinkButton>
     </div>
   );
 }

@@ -26,6 +26,14 @@ export const fetchPayments = async (params: PaymentQuery) => {
   return { data: res.data.data, meta: res.data.meta };
 };
 
+export const fetchDepartmentPayments = async (params: PaymentQuery) => {
+  const res = await api.get<ApiListResponse<Payment[]>>(
+    "/payments/get-department-payments",
+    { params },
+  );
+  return { data: res.data.data, meta: res.data.meta };
+};
+
 export const fetchPaymentStats = async (period: PaymentPeriod) => {
   const res = await api.get<{ data: PaymentStats }>("/payments/get-payment-stats", {
     params: { period },

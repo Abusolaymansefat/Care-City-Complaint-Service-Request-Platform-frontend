@@ -26,6 +26,7 @@ import {
 import type {
   Category,
   CategoryInput,
+  AssignmentQuery,
   Complaint,
   ComplaintQuery,
   CreateAssignmentInput,
@@ -65,7 +66,7 @@ export const usePublicComplaint = (id?: string) =>
     enabled: Boolean(id),
   });
 
-export const useAssignments = (query: { page?: number; limit?: number } = {}, enabled = true) =>
+export const useAssignments = (query: AssignmentQuery = {}, enabled = true) =>
   useQuery({
     queryKey: ["assignments", query],
     queryFn: () => fetchAssignments(query),

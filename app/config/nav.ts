@@ -1,3 +1,4 @@
+
 import {
   Bell,
   Bot,
@@ -13,8 +14,11 @@ import {
   Search,
   UserCircle,
   Users,
+  MessageSquare,
+  ChartNoAxesCombined,
   type LucideIcon,
 } from "lucide-react";
+
 import type { Role } from "@/types";
 
 export interface NavItem {
@@ -22,10 +26,15 @@ export interface NavItem {
   href: string;
   icon: LucideIcon;
 }
+
 export interface NavGroup {
   label: string;
   items: NavItem[];
 }
+
+// ============================================
+// Shared Account Navigation
+// ============================================
 
 const account: NavGroup = {
   label: "Account",
@@ -37,20 +46,9 @@ const account: NavGroup = {
   ],
 };
 
-const legacyOfficerGroups: NavGroup[] = [
-  {
-    label: "Menu",
-    items: [
-      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { title: "Complaints", href: "/officer/complaints", icon: ClipboardList },
-      { title: "Assignments", href: "/officer/assignments", icon: ListChecks },
-      { title: "Payments", href: "/officer/payments", icon: CreditCard },
-      { title: "Departments", href: "/officer/departments", icon: Building2 },
-      { title: "Categories", href: "/officer/categories", icon: Tags },
-    ],
-  },
-  account,
-];
+// ============================================
+// Technician Navigation
+// ============================================
 
 const technicianGroups: NavGroup[] = [
   {
@@ -94,59 +92,166 @@ const technicianGroups: NavGroup[] = [
       {
         title: "Work History",
         href: "/technician/work-history",
-        icon: UserCircle,
+        icon: History,
       },
     ],
   },
   account,
 ];
 
+// ============================================
+// Department Officer Navigation
+// ============================================
+
 const departmentOfficerGroups: NavGroup[] = [
   {
-    label: "Department",
+    label: "Department Management",
     items: [
-      { title: "Dashboard", href: "/officer/dashboard", icon: LayoutDashboard },
-      { title: "Department Complaints", href: "/officer/complaints", icon: ListChecks },
-      { title: "Assignments", href: "/officer/assignments", icon: ClipboardList },
-      { title: "Payments", href: "/officer/payments", icon: CreditCard },
-      { title: "Departments", href: "/officer/departments", icon: Building2 },
-      { title: "Categories", href: "/officer/categories", icon: Tags },
+      {
+        title: "Dashboard",
+        href: "/officer/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Complaints",
+        href: "/officer/complaints",
+        icon: ClipboardList,
+      },
+      {
+        title: "Assignments",
+        href: "/officer/assignments",
+        icon: ListChecks,
+      },
+      {
+        title: "Payments",
+        href: "/officer/payments",
+        icon: CreditCard,
+      },
+      {
+        title: "Departments",
+        href: "/officer/departments",
+        icon: Building2,
+      },
+      {
+        title: "Categories",
+        href: "/officer/categories",
+        icon: Tags,
+      },
+      {
+        title: "Feedback",
+        href: "/officer/feedback",
+        icon: MessageSquare,
+      },
+      {
+        title: "Reports & Analytics",
+        href: "/officer/reports",
+        icon: ChartNoAxesCombined,
+      },
     ],
   },
   account,
 ];
 
 export const navByRole: Record<Role, NavGroup[]> = {
+  // Citizen
   CITIZEN: [
     {
       label: "Menu",
       items: [
-        { title: "Home", href: "/dashboard", icon: LayoutDashboard },
-        { title: "Departments", href: "/citizen/departments", icon: Building2 },
-        { title: "Service requests", href: "/citizen/service-requests", icon: Tags },
-        { title: "My Complaints", href: "/citizen/complaints", icon: ClipboardList },
-        { title: "Create Poster", href: "/citizen/complaints/create-poster", icon: FilePlus2 },
-        { title: "Complaint Tracking", href: "/citizen/tracking", icon: Search },
-        { title: "AI Issue Guide", href: "/citizen/ai", icon: Bot },
-        { title: "Payments", href: "/citizen/payments", icon: CreditCard },
+        {
+          title: "Dashboard",
+          href: "/citizen/dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          title: "Departments",
+          href: "/citizen/departments",
+          icon: Building2,
+        },
+        {
+          title: "Service Requests",
+          href: "/citizen/service-requests",
+          icon: Tags,
+        },
+        {
+          title: "My Complaints",
+          href: "/citizen/complaints",
+          icon: ClipboardList,
+        },
+        {
+          title: "Create Poster",
+          href: "/citizen/complaints/create-poster",
+          icon: FilePlus2,
+        },
+        {
+          title: "Complaint Tracking",
+          href: "/citizen/tracking",
+          icon: Search,
+        },
+        {
+          title: "AI Issue Guide",
+          href: "/citizen/ai",
+          icon: Bot,
+        },
+        {
+          title: "Payments",
+          href: "/citizen/payments",
+          icon: CreditCard,
+        },
       ],
     },
     account,
   ],
+
+  // Technician
   TECHNICIAN: technicianGroups,
+
+  // Department Officer
   DEPARTMENT_OFFICER: departmentOfficerGroups,
-  OFFICER: legacyOfficerGroups,
+
+  // Legacy Officer
+  OFFICER: [account],
+
+  // Admin
   ADMIN: [
     {
-      label: "Admin",
+      label: "Administration",
       items: [
-        { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
-        { title: "All Complaints", href: "/admin/complaints", icon: ClipboardList },
-        { title: "Departments", href: "/admin/departments", icon: Building2 },
-        { title: "Categories", href: "/admin/categories", icon: Tags },
-        { title: "Assignments", href: "/admin/assignments", icon: ListChecks },
-        { title: "Payments", href: "/admin/payments", icon: CreditCard },
-        { title: "Users", href: "/admin/users", icon: Users },
+        {
+          title: "Dashboard",
+          href: "/admin",
+          icon: LayoutDashboard,
+        },
+        {
+          title: "All Complaints",
+          href: "/admin/complaints",
+          icon: ClipboardList,
+        },
+        {
+          title: "Departments",
+          href: "/admin/departments",
+          icon: Building2,
+        },
+        {
+          title: "Categories",
+          href: "/admin/categories",
+          icon: Tags,
+        },
+        {
+          title: "Assignments",
+          href: "/admin/assignments",
+          icon: ListChecks,
+        },
+        {
+          title: "Payments",
+          href: "/admin/payments",
+          icon: CreditCard,
+        },
+        {
+          title: "Users",
+          href: "/admin/users",
+          icon: Users,
+        },
       ],
     },
     account,

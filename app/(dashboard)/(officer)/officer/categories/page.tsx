@@ -1,10 +1,6 @@
-import { ComingSoon } from "@/components/ui/coming-soon";
 
-export default function OfficerCategoriesPage() {
-  return (
-    <ComingSoon
-      title="Department categories"
-      description="The category API does not currently authorize department officers."
-    />
-  );
+import CategoriesPage from "@/components/officer/categories/categories-page";
+
+export default function OfficerCategoriesRoute() {
+  return <CategoriesPage />;
 }

@@ -3,6 +3,7 @@ import type {
   Category,
   CategoryInput,
   CategoryQuery,
+  AssignmentQuery,
   Assignment,
   Complaint,
   ComplaintQuery,
@@ -66,7 +67,7 @@ export const fetchComplaints = async (params: ComplaintQuery) => {
   return { data: response.data.data, meta: response.data.meta };
 };
 
-export const fetchAssignments = async (params: { page?: number; limit?: number }) => {
+export const fetchAssignments = async (params: AssignmentQuery) => {
   const response = await api.get<ApiListResponse<Assignment[]>>(
     "/assignments/get-assignments",
     { params }

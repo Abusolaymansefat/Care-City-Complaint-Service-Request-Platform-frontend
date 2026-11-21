@@ -22,6 +22,11 @@ export interface User {
   updatedAt?: string;
 }
 
+export type DepartmentTechnician = Pick<
+  User,
+  "id" | "name" | "email" | "status" | "departmentId" | "department"
+>;
+
 export type ManagedUserRole = Exclude<Role, "OFFICER">;
 
 export interface UserQuery {
@@ -288,6 +293,12 @@ export interface Assignment {
   complaint: AssignmentComplaint;
   technician?: { id: string; name: string; email: string };
   assignedBy?: { id: string; name: string; email: string };
+}
+
+export interface AssignmentQuery {
+  page?: number;
+  limit?: number;
+  technicianId?: string;
 }
 
 export interface CreateAssignmentInput {

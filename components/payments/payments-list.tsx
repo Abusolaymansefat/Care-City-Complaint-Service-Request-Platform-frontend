@@ -20,6 +20,7 @@ export function PaymentsList({
   emptyMessage,
   showPayer,
   detailBasePath,
+  allowContinuePayment = true,
 }: {
   payments?: Payment[];
   meta?: PaginationMeta;
@@ -28,7 +29,8 @@ export function PaymentsList({
   onPageChange: (page: number) => void;
   emptyMessage: string;
   showPayer?: boolean;
-  detailBasePath: string;
+  detailBasePath?: string;
+  allowContinuePayment?: boolean;
 }) {
   if (isLoading) {
     return (
@@ -80,7 +82,8 @@ export function PaymentsList({
                 {format(new Date(payment.createdAt), "dd MMM yyyy, hh:mm a")}
               </p>
               <div className="flex gap-2">
-                {payment.paymentUrl &&
+                {allowContinuePayment &&
+                  payment.paymentUrl &&
                   (payment.status === "PENDING" || payment.status === "INITIATED") && (
                     <a
                       href={payment.paymentUrl}
@@ -89,12 +92,14 @@ export function PaymentsList({
                       Continue bKash
                     </a>
                   )}
-                <Link
-                  href={`${detailBasePath}/${payment.id}`}
-                  className="text-sm text-primary hover:underline"
-                >
-                  View details
-                </Link>
+                {detailBasePath && (
+                  <Link
+                    href={`${detailBasePath}/${payment.id}`}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    View details
+                  </Link>
+                )}
               </div>
             </CardContent>
           </Card>
